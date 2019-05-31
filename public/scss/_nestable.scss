@@ -1,0 +1,95 @@
+/* =============
+   Nestable
+============= */
+
+.custom-dd {
+  .dd-list {
+    .dd-item {
+      .dd-handle {
+        background: $light;
+        border: 1px solid $light;
+        padding: 10px 16px;
+        height: auto;
+        font-size: 14px;
+        font-weight: normal;
+        border-radius: 3px;
+
+        &:hover {
+          color: $primary;
+        }
+      }
+
+      button {
+        height: auto;
+        font-size: 25px;
+        margin: 8px auto;
+        color: $muted;
+        width: 35px;
+      }
+    }
+  }
+}
+
+.custom-dd-empty {
+  .dd-list {
+    .dd3-handle {
+      border: none;
+      background: $light3;
+      height: 36px !important;
+      width: 36px !important;
+
+      &:before {
+        color: inherit;
+        top: 7px;
+      }
+
+      &:hover {
+        color: $primary;
+      }
+    }
+    .dd3-content {
+      height: auto;
+      border: none;
+      padding: 8px 16px 8px 46px;
+      background: $light3;
+      font-family: $font-primary;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+    button {
+      width: 26px;
+      height: 26px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+}
+
+.dd-dragel > .dd-item .dd-handle {
+  padding: 8px 16px !important;
+  background: $light3;
+  height: auto;
+}
+
+.dd-placeholder, .dd-empty {
+  background: $light3;
+  border: 1px dashed $muted;
+}
+.dd-dragel > .dd3-item > .dd3-handle {
+  border: none;
+  background: $light3;
+  height: 36px !important;
+  width: 36px !important;
+
+  &:before {
+    color: inherit;
+    top: 7px;
+  }
+}
+.dd-dragel > .dd3-item > .dd3-content {
+  padding: 8px 16px 8px 46px;
+  background: $light3;
+  height: auto;
+}

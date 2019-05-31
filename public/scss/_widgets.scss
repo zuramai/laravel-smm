@@ -1,0 +1,114 @@
+/* ==============
+  Widgets
+===================*/
+
+.widget-chart li {
+  width: 31.5%;
+  display: inline-block;
+  padding: 0;
+
+  i {
+    font-size: 22px;
+  }
+}
+
+// mini-stats
+
+.mini-stat{
+  .mini-stat-desc{
+    background: rgba($white, 0.1);
+   }
+ }
+
+ // latest message
+
+.latest-message-list{
+  .message-time {
+    position: absolute;
+    right: 0;
+  }
+  .massage-desc{
+    overflow: hidden;
+  }
+  .user{
+    h5{
+      width: 34px;
+      height: 34px;
+      line-height: 34px;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+    img{
+      width: 34px;
+      height: 34px;
+    }
+  }
+}
+
+// social-source
+.social-source-icon{
+  i{
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 4px;
+  }
+}
+
+.lg-icon{
+  i{
+    width: 58px;
+    height: 58px;
+    line-height: 58px;
+  }
+}
+
+/* Activity */
+.activity-feed {
+  padding: 15px 15px 0 15px;
+  list-style: none;
+
+  .feed-item {
+    position: relative;
+    padding-bottom: 26px;
+    padding-left: 20px;
+    border-left: 2px solid $light;
+
+    &:last-child {
+      border-color: transparent;
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: -5px;
+      left: -6px;
+      width: 10px;
+      height: 10px;
+      transform: rotate(45deg);
+      background: $white;
+      border: 2px solid $primary;
+    }
+
+    .feed-item-list{
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: $primary;
+      border-top-left-radius: 0px;
+    }
+
+    .date {
+      display: block;
+      position: relative;
+      top: -5px;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+    .activity-text {
+      position: relative;
+      top: -3px;
+    }
+  }
+}

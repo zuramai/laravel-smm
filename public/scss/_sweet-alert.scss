@@ -1,0 +1,65 @@
+
+
+/* =========== */
+/* Sweet Alert2 */
+/* =========== */
+
+.swal2-modal {
+  font-family: $font-primary;
+
+  .swal2-title {
+    font-size: 24px;
+  }
+  .swal2-content {
+    font-size: 16px;
+  }
+  .swal2-spacer {
+    margin: 10px 0;
+  }
+
+  .swal2-file, .swal2-input, .swal2-textarea {
+    border: 2px solid $muted;
+    font-size: 16px;
+    box-shadow: none !important;
+    &:focus {
+      outline: 0;
+      border: 2px solid $primary;
+    }
+  }
+}
+
+.swal2-popup{
+  .swal2-styled{
+    &:focus{
+      box-shadow: none;
+    }
+  }
+}
+
+.swal2-icon{
+  &.swal2-question {
+    color: $primary;
+    border-color: $primary;
+  }
+  &.swal2-success {
+    border-color: $success;
+  
+    .line {
+      background-color: $success;
+    }
+  
+    .placeholder {
+      border-color: $success;
+    }
+  }
+  &.swal2-warning {
+    color: $warning;
+    border-color: $warning;
+  }
+  &.swal2-error {
+    border-color: $danger;
+    .line {
+      background-color: $danger;
+    }
+  }
+}

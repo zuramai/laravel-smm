@@ -1,0 +1,155 @@
+/* ==============
+  Tables
+===================*/
+
+
+.table {
+  margin-bottom: 10px;
+}
+
+.table>tbody>tr>td, .table>tfoot>tr>td, .table>thead>tr>td {
+  padding: 15px 12px;
+}
+
+.table-hover tbody tr:hover,.table-striped tbody tr:nth-of-type(odd),
+.thead-default th{
+  background-color: $light;
+}
+
+.table{
+  td, th{
+    vertical-align: middle;
+  }
+}
+
+/************** datatables ***************/
+
+.dataTables_wrapper.container-fluid{
+  width: auto;
+}
+
+/* == Responsive Table ==*/
+table.focus-on {
+  tbody {
+    tr.focused {
+      th {
+        background-color: $primary;
+        color: $white;
+      }
+      td {
+        background-color: $primary;
+        color: $white;
+      }
+    }
+  }
+}
+
+.table-rep-plugin {
+  .btn-toolbar {
+    display: block;
+  }
+  .table-responsive {
+    border: none !important;
+  }
+  .fixed-solution{
+    margin-bottom: 0px;
+    .sticky-table-header {
+      top: 120px !important;
+    }
+  }
+  .btn-group.float-right .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+  tbody {
+    th {
+      font-size: 14px;
+      font-weight: normal;
+    }
+  }
+  .checkbox-row {
+    padding-left: 40px;
+
+    label {
+      display: inline-block;
+      padding-left: 5px;
+      position: relative;
+      &::before {
+        -o-transition: 0.3s ease-in-out;
+        -webkit-transition: 0.3s ease-in-out;
+        background-color: $white;
+        border-radius: 3px;
+        border: 1px solid $lightdark-alt;
+        content: "";
+        display: inline-block;
+        height: 17px;
+        left: 0;
+        margin-left: -20px;
+        position: absolute;
+        transition: 0.3s ease-in-out;
+        width: 17px;
+        outline: none !important;
+      }
+      &::after {
+        color: $lightdark5;
+        display: inline-block;
+        font-size: 11px;
+        height: 16px;
+        left: 0;
+        margin-left: -20px;
+        padding-left: 3px;
+        padding-top: 1px;
+        position: absolute;
+        top: -1px;
+        width: 16px;
+      }
+    }
+    input[type="checkbox"] {
+      cursor: pointer;
+      opacity: 0;
+      z-index: 1;
+      outline: none !important;
+
+      &:disabled + label {
+        opacity: 0.65;
+      }
+    }
+    input[type="checkbox"]:focus + label {
+      &::before {
+        outline-offset: -2px;
+        outline: none;
+      }
+    }
+    input[type="checkbox"]:checked + label {
+      &::after {
+        content: "\f00c";
+        font-family: 'FontAwesome';
+      }
+    }
+    input[type="checkbox"]:disabled + label {
+      &::before {
+        background-color: $light;
+        cursor: not-allowed;
+      }
+    }
+    input[type="checkbox"]:checked + label {
+      &::before {
+        background-color: $primary;
+        border-color: $primary;
+      }
+      &::after {
+        color: $white;
+      }
+    }
+  }
+}
+
+@media (max-width:768px){
+  .table-rep-plugin{
+    .fixed-solution{
+      .sticky-table-header {
+        top: 60px !important;
+      }
+    }
+  }
+}

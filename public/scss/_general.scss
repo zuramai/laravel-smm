@@ -1,0 +1,98 @@
+/* ==============
+  General
+===================*/
+
+body {
+  background: $bg-body;
+  margin: 0;
+  font-size: $base-font;
+  font-family: $font-primary;
+}
+html {
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100%;
+  background: $bg-body;
+}
+h1, h2, h3, h4, h5, h6 {
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+h1 {
+  line-height: 43px;
+}
+
+h2 {
+  line-height: 35px;
+}
+
+h3 {
+  line-height: 30px;
+  small {
+    color: $lightdark4;
+  }
+}
+
+h4 {
+  line-height: 22px;
+  small {
+    color: $lightdark4;
+  }
+}
+
+h5 {
+  small {
+    color: $lightdark4;
+  }
+}
+
+* {
+  outline: none !important;
+}
+
+a {
+  &:hover {
+    outline: 0;
+    text-decoration: none;
+  }
+  &:active {
+    outline: 0;
+    text-decoration: none;
+  }
+  &:focus {
+    outline: 0;
+    text-decoration: none;
+  }
+}
+
+code {
+  color: $info;
+}
+
+.container-alt {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#wrapper {
+  height: $height;
+  overflow: hidden;
+  width: $width;
+}
+
+.page {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+
+@media (min-width: 200px) and (max-width: 991px) {
+  body {
+    overflow-x: hidden;
+  }
+}

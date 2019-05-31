@@ -1,0 +1,42 @@
+/* ==============
+ Demo Only css
+===================*/
+
+.button-items {
+
+  .btn {
+    margin-top: 8px;
+    margin-right: 5px;
+  }
+}
+
+.bs-example-modal {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  z-index: 1;
+  display: block;
+}
+
+.icon-demo-content {
+  text-align: center;
+  color: $muted;
+
+  i{
+    display: block;
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .col-sm-6 {
+    margin-bottom: 30px;
+
+    &:hover {
+      i {
+        color: $primary;
+      }
+    }
+  }
+}

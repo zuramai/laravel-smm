@@ -1,0 +1,80 @@
+/*
+Template Name: Zinzer - Responsive Bootstrap 4 Admin Dashboard
+Author: ThemeDesign
+File: Main scss File
+*/
+
+/*
+01. General
+02. Loader
+03. Bootstrap Custom
+04. Helper
+05. Waves Effect
+06. Menu
+07. Demo Only
+08. alerts
+09. Buttons
+10. Cards
+11. Tabs
+12. Progressbar
+13. Pagination
+14. Popovers & Tooltips
+15. Sweet Alert
+16. email
+17. Calendar
+18. Form Elements
+19. Form Advanced
+20. Form Validation
+21. Form Editor
+22. Form Uploads
+23. Summernote
+24. Charts
+25. Widgets
+26. Tables
+27. Maps
+28. Nestable
+29. Alertify
+30. Rangeslider
+31. Session timeout
+32. Timeline
+33. Print
+34. Account pages
+35. Responsive
+*/
+
+
+@import "variables";
+@import "general";
+@import "bootstrap-custom";
+@import "helper";
+@import "waves";
+@import "topbar";
+@import "menu";
+@import "page-head";
+@import "footer";
+@import "demo-only";
+@import "loader";
+@import "buttons";
+@import "card";
+@import "alerts";
+@import "progressbar";
+@import "pagination";
+@import "popover-tooltips";
+@import "calendar";
+@import "widgets";
+@import "charts";
+@import "form-elements";
+@import "form-validation";
+@import "form-advanced";
+@import "form-editor";
+@import "form-upload";
+@import "summernote";
+@import "tables";
+@import "maps";
+@import "alertify";
+@import "nestable";
+@import "range-slider";
+@import "sweet-alert";
+@import "timeline";
+@import "account-pages";
+

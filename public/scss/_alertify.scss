@@ -1,0 +1,26 @@
+/* ==============
+  Alertify
+===================*/
+
+.alertify,.alertify-logs {
+  z-index: 99;
+}
+
+.alertify {
+  input {
+    border: 2px solid $muted;
+  }
+}
+
+.alertify-logs>.success {
+  background-color: $success;
+  color: $white;
+}
+
+.alertify-logs>.error {
+  background-color: $danger;
+  color: $white;
+}
+.alertify-logs>*, .alertify-logs>.default {
+  background-color: $primary;
+}

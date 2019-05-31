@@ -1,0 +1,39 @@
+
+
+.typeahead-wrapper{
+    .twitter-typeahead{
+        display: block !important;
+    }
+    .tt-menu {
+        background-color: $white;
+        border: 1px solid $lightgray;
+        right: 0px;
+        margin: 4px 0;
+        padding: 8px 0;
+        border-radius: 8px;
+    }
+    .tt-suggestion{
+        &.tt-selectable {
+            padding: 3px 20px;
+            line-height: 24px;
+            &:hover{
+                background: $light9;
+            }
+        }
+    }
+    .typeahead-empty-message {
+        padding: 5px 10px;
+        color: $danger;
+    }
+    .league-name {
+        padding: 3px 20px;
+        font-size: $base-font;
+    }
+      
+}
+
+#scrollable-dropdown-menu .tt-menu {
+    max-height: 110px;
+    overflow-y: auto;
+}
+
