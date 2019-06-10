@@ -201,6 +201,7 @@
                                                 <li><a href="{{route('order_sosmed')}}">Pemesanan Baru</a></li>
                                                 <li><a href="{{route('order_sosmed_mass')}}">Order Masal</a></li>
                                                 <li><a href="{{route('sosmed_history')}}">Riwayat Pemesanan</a></li>
+                                                <li><a href="{{route('sosmed_tos')}}">Ketentuan Layanan</a></li>
                                             </ul>
                                         </li>
                                         <li class="has-submenu">

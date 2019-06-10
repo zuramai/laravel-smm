@@ -24,8 +24,8 @@ class StaffController extends Controller
     }
 
     public function voucher_post(Request $r) {
-        $min_quantity = env('MIN_VOUCHER');
-        $max_quantity = env('MAX_VOUCHER');
+        $min_quantity = config('web_config')['MIN_VOUCHER'];
+        $max_quantity = config('web_config')['MAX_VOUCHER'];
 
         $r->validate([
             'quantity' => "required|integer|min:$min_quantity|max:$max_quantity",
@@ -105,32 +105,35 @@ class StaffController extends Controller
     		'level' => 'required|in:Member,Reseller,Agen,Admin',
     		'name' => 'required|string',
     		'email' => 'required|email|unique:users,email',
-    		'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'username' => 'required|string|min:6',
+    		'phone' => 'required|numeric'
     	]);
 
     	if($r->level == 'Admin') {
-    		$get_balance = env('ADMIN_BALANCE');
-    		$cut_balance = env("ADD_ADMIN_PRICE");
+    		$get_balance = config('web_config')['ADMIN_BALANCE'];
+    		$cut_balance = config('web_config')["ADD_ADMIN_PRICE"];
     	}
     	else if($r->level == 'Reseller') {
-    		$get_balance = env('RESELLER_BALANCE');
-    		$cut_balance = env("ADD_RESELLER_PRICE");
+    		$get_balance = config('web_config')['RESELLER_BALANCE'];
+    		$cut_balance = config('web_config')["ADD_RESELLER_PRICE"];
     	}
     	else if($r->level == 'Agen') {	
-    		$get_balance = env('AGEN_BALANCE');
-    		$cut_balance = env("ADD_AGEN_PRICE");
+    		$get_balance = config('web_config')['AGEN_BALANCE'];
+    		$cut_balance = config('web_config')["ADD_AGEN_PRICE"];
     	}
     	else if($r->level == 'Member') {
-    		$get_balance = env('MEMBER_BALANCE');
-    		$cut_balance = env("ADD_MEMBER_PRICE");
+    		$get_balance = config('web_config')['MEMBER_BALANCE'];
+    		$cut_balance = config('web_config')["ADD_MEMBER_PRICE"];
     	}
-
     	$user = new User;
     	$user->name = $r->name;
     	$user->email = $r->email;
     	$user->password = Hash::make($r->password);
 		$user->level = $r->level;
-    	$user->balance = $get_balance;
+        $user->balance = $get_balance;
+        $user->username = $r->username;
+    	$user->phone = $r->phone;
    		$user->status = 'Active';
    		$user->api_key = Hash::make(Str::random(5));
    		$user->uplink = Auth::user()->email;

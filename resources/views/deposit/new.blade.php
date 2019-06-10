@@ -18,15 +18,6 @@
           	<div class="row">
           		<div class="col-md-7">
           			<div class="card">
-          				@if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
 		              <form method="POST" action="">
 		              	@csrf
 			              <div class="card-body">
@@ -37,9 +28,19 @@
 		                        </div>
 			              	@elseif(session('danger'))
 		                        <div class="alert alert-danger" role="alert">
-		                            <i class="fa fa-exclamation-circle"></i> {{ session('danger') }}
+		                            <i class="fa fa-exclamation-circle"></i> {!! session('danger') !!}
 		                        </div>
 		                    @endif
+			                    
+	          				@if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{!! $error !!}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 		                    
 			                <div class="form-group">
 		                      <label>Tipe</label>

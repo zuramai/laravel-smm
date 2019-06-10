@@ -21,11 +21,23 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
+        
+        try{
+            Schema::hasTable('configs');
+            $web_config = Config::all()->pluck('value','name');
+            config(['web_config'=>$web_config]);
+            // or \DB::statement('show Databases');
+        }catch(\PDOException $e){
+            return redirect('install');
+            //This means there is definitely error connecting to database
+            //I don't understand why you don't want to catch me :(
+        }
+        
 
         view()->composer('*', function($view) {
             $web_config = Config::all()->pluck('value','name');
             config(['web_config'=>$web_config]);
+
             if(Auth::check()){
                 $news = News::orderBy('id','desc')->limit(5)->get(); 
                 $last_login = Activity::where('user_id',auth()->user()->id)->where('type','Login')->orderBy('id','desc')->first();

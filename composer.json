@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.1.3",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.3",
         "imliam/laravel-env-set-command": "1.0.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
@@ -37,6 +38,7 @@
     },
     "autoload": {
         "psr-4": {
+            "PTTridi\\Cekmutasi\\": "packages/pt-tridi/cekmutasi/src",
             "App\\": "app/"
         },
         "classmap": [

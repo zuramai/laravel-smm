@@ -31,14 +31,14 @@ class DepositController extends Controller
             'type' => 'required',
             'method' => 'required|exists:deposit_methods,id',
             'sender' => 'required|string',
-            'quantity' => 'required|numeric|min:'.env('MIN_DEPOSIT')
+            'quantity' => 'required|numeric|min:'.config('web_config')['MIN_DEPOSIT']
         ],[
-            'quantity.min' => 'Minimal nominal deposit adalah Rp '.number_format(env('MIN_DEPOSIT'))
+            'quantity.min' => 'Minimal nominal deposit adalah Rp '.number_format(config('web_config')['MIN_DEPOSIT'])
         ]);
         
         $count_deposit = Deposit::where('user_id',Auth::user()->id)->count();
         if($count_deposit >= 3) {
-            session()->flash('danger','<b>Gagal: </b>Kamu mempunyai '.$count_deposit.' yang belum diselesaikan. Silahkan selesaikan terlebih dahulu.');
+            session()->flash('danger','<b>Gagal: </b>Kamu mempunyai '.$count_deposit.' deposit yang belum diselesaikan. Silahkan selesaikan terlebih dahulu.');
             return redirect()->back();
         }
 

@@ -162,11 +162,12 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\OrderPulsaProvider::class,
+        RachidLaasri\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
 
         /*
          * Package Service Providers...
          */
-
+        PTTridi\Cekmutasi\CekmutasiServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -226,7 +227,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Alert' => UxWeb\SweetAlert\SweetAlert::class,
         'OrderPulsa' => App\Helpers\Order_pulsa::class,
-
+        'Cekmutasi' => PTTridi\Cekmutasi\CekmutasiFacade::class,
     ],
 
 ];

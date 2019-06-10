@@ -63,7 +63,6 @@ class OrderController extends Controller
             $likes_comment = true;
         }
 
-        $api_id = env('API_ID_IRV');
         $data_service = Service::where('id',$service_id)->first();  
         $pid = $data_service->pid;
         $min = $data_service->min;
@@ -104,6 +103,7 @@ class OrderController extends Controller
         $api_key = $data_service->provider->api_key;
 
         if($data_service->provider->name == 'IRV'){
+            $api_id = $data_service->provider->additional;
             if(isset($r->custom_comment)) {
                 $order = OrderSosmed::irvankede($api_link, $api_key, $api_id, $pid, $post_link, $post_quantity, $custom_comments);
             }else if(isset($r->custom_link)) {
@@ -290,8 +290,8 @@ class OrderController extends Controller
                 'post_quantity'=>$post_quantity
             ];
             
-            $api_id = env('API_ID_IRV');
             $data_service = Service::where('id',$post_service)->first();  
+            $api_id = $data_service->provider->additional;
             if(!$data_service) {
                 $total_error++;
             }else{
@@ -423,9 +423,12 @@ class OrderController extends Controller
 
         if($provider_name == "PORTALPULSA") {
             // MASUKKAN API PORTALPULSA
-            $user_id = env('PORTALPULSA_USER_ID');
-            $key = env('PORTALPULSA_KEY');
-            $secret = env('PORTALPULSA_SECRET');
+            $key = $service_pulsa->provider->api_key;
+            $additional = $service_pulsa->provider->additional;
+            $explode = explode('|',$additional);
+            $user_id = $explode[0];
+            $secret = $explode[1];
+            
 
             if(isset($r->pln)){
                 $order = OrderPulsa::portalpulsa($user_id, $key, $secret, $code, $target, $r->pln);
@@ -435,19 +438,7 @@ class OrderController extends Controller
 
             if($order['status'] == false) {
                 Alert::error('Server maintenance','Gagal');
-                session()->flash('danger','Gagal');
-                return redirect()->back();
-            }else{
-                $oid = $order['order_id'];
-                $poid = $oid;
-            }
-        }else if($provider_name == "OCEANH2H") {
-            $order = OrderPulsa::oceanh2h($code, $target);
-
-            if($order['status'] == false) {
-                $message = $order['message'];
-                Alert::error('Server maintenance','Gagal');
-                session()->flash('danger','Gagal: '.$message);
+                session()->flash('danger','Gagal: Server Maintenance');
                 return redirect()->back();
             }else{
                 $oid = $order['order_id'];
@@ -543,6 +534,15 @@ class OrderController extends Controller
 
     public function tos() {
         return view('order.sosmed.tos');
+    }
+
+    public function invoice($id) {
+        $order = Order::findOrFail($id);
+        $custom_price = Custom_price::where('service_id', $order->service_id)->where('user_id',Auth::user()->id)->first();
+        if($custom_price) {
+            $order->service->price  -= $custom_price->potongan;
+        }
+        return view('order.sosmed.invoice', compact('order'));
     }
 
 }

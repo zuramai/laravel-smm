@@ -68,13 +68,14 @@ Route::group(['middleware'=>['auth']], function() {
 	# ====================
 	Route::prefix('order')->group(function() {
 		Route::prefix('sosmed')->group(function(){
-			Route::get('/terms_of_service', 'OrderController@tos');
 			Route::get('/',"OrderController@sosmed")->name('order_sosmed');
+			Route::post('/',"OrderController@sosmed_post")->name('order_sosmed_post');
 			Route::get('/mass',"OrderController@sosmed_mass")->name('order_sosmed_mass');
 			Route::post('/mass',"OrderController@sosmed_mass_post")->name('order_sosmed_mass_post');
-			Route::post('/',"OrderController@sosmed_post")->name('order_sosmed_post');
+			Route::get('/terms_of_service', 'OrderController@tos')->name('sosmed_tos');
 			Route::get("/history", "OrderController@sosmed_history")->name('sosmed_history');	
 			Route::get("/statistic", "OrderController@sosmed_statistic")->name('sosmed_statistic');	
+			Route::get("/invoice/{id}", "OrderController@invoice")->name('sosmed_invoice');	
 		
 			Route::group(['prefix'=>'ajax', 'middleware'=>['auth','AjaxMiddleware']], function(){
 				Route::post('/get_service', 'OrderController@get_service');
@@ -92,8 +93,8 @@ Route::group(['middleware'=>['auth']], function() {
 
 
 		Route::prefix('pulsa')->group(function() {
-			Route::get('/order','OrderController@pulsa')->name('order_pulsa');
-			Route::post('/order','OrderController@pulsa_order')->name('post_pulsa');
+			Route::get('/','OrderController@pulsa')->name('order_pulsa');
+			Route::post('/','OrderController@pulsa_order')->name('post_pulsa');
 			Route::get('/history','OrderController@pulsa_history')->name('order_pulsa_history');
 			Route::get('/statistic','OrderController@pulsa_statistic')->name('pulsa_statistic');
 

@@ -334,9 +334,12 @@ class APIController extends Controller
 
             if($check_service->provider->name == "PORTALPULSA") {
                 // MASUKKAN API PORTALPULSA
-                $user_id = env('PORTALPULSA_USER_ID');
-                $key = env('PORTALPULSA_KEY');
-                $secret = env('PORTALPULSA_SECRET');
+                $key = $check_service->provider->api_key;
+                $additional = $check_service->provider->additional;
+                foreach(explode($additional,'|') as $data_additional) {
+                    $user_id = $data_additional[0];
+                    $secret = $data_additional[1];
+                }
 
                 if(isset($r->pln)){
                     $order = OrderPulsa::portalpulsa($user_id, $key, $secret, $service_pid, $target, $r->pln);

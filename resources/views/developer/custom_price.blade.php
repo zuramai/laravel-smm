@@ -38,6 +38,13 @@
 		                        </div>
 
 	                    	@endif
+	                        @if(session('danger'))
+
+		                        <div class="alert alert-danger" role="alert">
+		                            <i class="fa fa-check-circle"></i> {!! session('danger') !!}
+		                        </div>
+
+	                    	@endif
 		              	
 						<div class="table-responsive">
 							<div class="float-right mb-2">
@@ -55,8 +62,8 @@
 							        		@csrf
 									      	<div class="modal-body">
 									        	<div class="form-group">
-									        		<label>Email pengguna</label>
-									        		<input type="email" name="email" class="form-control">
+									        		<label>Email/username pengguna</label>
+									        		<input type="text" name="email" class="form-control">
 									        	</div>
 									        	<div class="form-group">
 									        		<label>Service ID (service id <a href="{{ url('/price/sosmed') }}">lihat disini</a>)</label>

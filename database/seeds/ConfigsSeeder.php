@@ -15,133 +15,76 @@ class ConfigTableSeeder extends Seeder
         DB::table('configs')->delete();
         DB::table('configs')->insert([
             [
-                'name' => 'app_name',
-                'value' => 'Awesome App'
+                'name' => 'WEB_LOGO_URL',
+                'value' => asset('img/logo/laravelsmmv2.png')
             ],
             [
-                'name' => 'currency_symbol',
-                'value' => '$'
+                'name' => 'WEB_LOGO_URL_DARK',
+                'value' => asset('img/logo/laravelsmmv2-dark.png')
             ],
             [
-                'name' => 'currency_code',
-                'value' => 'USD'
+                'name' => 'APP_NAME',
+                'value' => 'Laravel-SMMV2'
             ],
             [
-                'name' => 'logo',
-                'value' => 'images/70c1765f63707351bc3b5666dcdc7ce8.png'
+                'name' => 'WEB_TITLE',
+                'value' => 'Laravel-SMMV2'
             ],
             [
-                'name' => 'date_format',
-                'value' => 'd-m-Y'
+                'name' => 'WEB_DESCRIPTION',
+                'value' => 'SMM Panel Termurah dan berkualitas tinggi yang menjual jasa layanan Instagram followers,like,view sampai Layanan Youtube seperti subscriber, views, likes. Bergabunglah bersama kami dan tingkatkan penghasilan anda'
             ],
             [
-                'name' => 'banner',
-                'value' => 'images/99d575092d9e0fd3a1ad35b091660b3e.png'
+                'name' => 'ADD_MEMBER_PRICE',
+                'value' => 5000
             ],
             [
-                'name' => 'home_page_description',
-                'value' => '⭐️Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum'
+                'name' => 'ADD_AGEN_PRICE',
+                'value' => 10000
             ],
             [
-                'name' => 'recaptcha_public_key',
-                'value' => 'pub_abc123'
+                'name' => 'ADD_RESELLER_PRICE',
+                'value' => 50000
             ],
             [
-                'name' => 'recaptcha_private_key',
-                'value' => 'prv_abc123'
+                'name' => 'ADD_ADMIN_PRICE',
+                'value' => 50000
             ],
             [
-                'name' => 'minimum_deposit_amount',
-                'value' => '10'
+                'name' => 'MEMBER_BALANCE',
+                'value' => 5000
             ],
             [
-                'name' => 'home_page_meta',
-                'value' => '<meta name="description" content="A description">
-<meta name="keywords" content="SMM Services">'
+                'name' => 'AGEN_BALANCE',
+                'value' => 10000
             ],
             [
-                'name' => 'module_api_enabled',
-                'value' => '1'
+                'name' => 'RESELLER_BALANCE',
+                'value' => 50000
             ],
             [
-                'name' => 'module_support_enabled',
-                'value' => '1'
+                'name' => 'ADMIN_BALANCE',
+                'value' => 50000
             ],
             [
-                'name' => 'theme_color',
-                'value' => '#4285f4'
+                'name' => 'MIN_VOUCHER',
+                'value' => 5000
             ],
             [
-                'name' => 'background_color',
-                'value' => '#e9ebee'
+                'name' => 'MAX_VOUCHER',
+                'value' => 1000000
             ],
             [
-                'name' => 'language',
-                'value' => 'en'
+                'name' => 'MIN_DEPOSIT',
+                'value' => 5000
             ],
             [
-                'name' => 'display_price_per',
-                'value' => '1000'
+                'name' => 'WEB_FAVICON_URL',
+                'value' => asset('img/logo/fav.png')
             ],
             [
-                'name' => 'admin_note',
-                'value' => 'Update me I am admin note'
-            ],
-            [
-                'name' => 'admin_layout',
-                'value' => 'container-fluid'
-            ],
-            [
-                'name' => 'user_layout',
-                'value' => 'container'
-            ],
-            [
-                'name' => 'panel_theme',
-                'value' => 'material'
-            ],
-            [
-                'name' => 'anonymizer',
-                'value' => 'https://anonym.to/?'
-            ],
-            [
-                'name' => 'front_page',
-                'value' => 'login'
-            ],
-            [
-                'name' => 'show_service_list_without_login',
-                'value' => 'YES'
-            ],
-            [
-                'name' => 'notify_email',
-                'value' => 'notify@example.com'
-            ],
-            [
-                'name' => 'currency_separator',
-                'value' => '.'
-            ],
-            [
-                'name' => 'app_key',
-                'value' => '$2y$10$Bpvj5bSA7mn9D83x/pjFqOhBfRG2dcnh52SjKhY0JytfMx5.1MSPK'
-            ],
-            [
-                'name' => 'app_code',
-                'value' => '$2y$10$JoSs59ZA2LPqRp7Xs9Ed6.57zDdGqLNhr6UAAAy/8WffBxMGTOpz2'
-            ],
-            [
-                'name' => 'envato_username',
-                'value' => ''
-            ],
-            [
-                'name' => 'envato_purchase_code',
-                'value' => ''
-            ],
-            [
-                'name' => 'module_subscription_enabled',
-                'value' => '1'
-            ],
-            [
-                'name' => 'timezone',
-                'value' => 'America/Chicago'
+                'name' => 'WEB_AUTH_DESCRIPTION',
+                'value' => "<h5 class='font-14 text-muted mb-4'>AHMAD-SMM, Website Penyedia Jasa Sosial Media &amp; Pulsa PPOB Terbaik</h5>                <p class='text-muted mb-4'>Dengan bergabung bersama kami, Anda dapat menjadi penyedia jasa social media atau reseller social media seperti jasa penambah Followers, Likes, dll.                Saat ini tersedia berbagai layanan untuk social media terpopuler seperti Instagram, Facebook, Twitter, Youtube, dll. Dan kamipun juga menyediakan Panel Pulsa &amp; PPOB seperti Pulsa All Operator, Paket Data, Saldo Gojek/Grab, All Voucher Game Online, Dll.</p>                <h5 class='font-14 text-muted mb-4'>Kelebihan {{config('web_config')['APP_NAME']}} :</h5>                <div>                    <p><i class='mdi mdi-arrow-right text-primary mr-2'></i>Harga Instagram Followers mulai dari Rp 100 per 1000</p>                    <p><i class='mdi mdi-arrow-right text-primary mr-2'></i>Harga Instagram Likes mulai dari Rp 0.</p>                    <p><i class='mdi mdi-arrow-right text-primary mr-2'></i>Harga Youtube Subscriber mulai dari Rp 10.000 per 1k subscriber</p>                </div>"
             ],
 
         ]);

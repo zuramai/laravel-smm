@@ -36,6 +36,14 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $installedLogFile = storage_path('installed');
+
+        $dateStamp = date("Y/m/d h:i:sa");
+
+        if (!file_exists($installedLogFile))
+        {
+            return redirect('install');
+        }
         if(!Auth::check()){
             return redirect('/landing');
         }

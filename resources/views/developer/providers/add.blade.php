@@ -47,6 +47,10 @@
                                 <input type="text" class="form-control" name="link">
                               </div>
                               <div class="form-group">
+                                <label>Tambahan</label>
+                                <input type="text" class="form-control" name="additional" placeholder="Masukkan data tambahan disini">
+                              </div>
+                              <div class="form-group">
                                 <label>Tipe</label>
                                 <select class="form-control" name="type">
                                   <option value="">Choose one..</option>

@@ -72,7 +72,7 @@
                                                 <h4 class="mb-3 mt-0 float-right">Rp {{number_format($used_balance)}}</h4>
                                             </div>
                                             <div>
-                                                <span class="badge badge-light text-primary"> {{$balance_percentage}}% </span> <span class="ml-2">Dari bulan lalu</span>
+                                                <span class="badge badge-light text-primary"> {{number_format($balance_percentage,2)}}% </span> <span class="ml-2">Dari bulan lalu</span>
                                             </div>
                                         </div>
                                         <div class="p-3">

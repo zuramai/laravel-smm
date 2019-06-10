@@ -30,25 +30,30 @@ class OthersController extends Controller
 
     public function custom_price_post(Request $r) {
         $r->validate([
-            'email' => 'required|exists:users,email',
+            'email' => 'required',
             'serviceid' => 'required|exists:services,id',
         ],[
             'serviceid.exists' => 'Layanan tidak ditemukan'
         ]);
+
         $email = $r->email;
 
         $sid = $r->serviceid;
-
         $service = Service::find($r->serviceid);
+        $total_price = $service->price+$service->keuntungan;
         $r->validate([
-            'potongan' => 'required|numeric|max:'.$service->price+$service->keuntungan
+            'potongan' => ['required','max:'.$total_price]
         ],[
             'potongan.min' => 'Jumlah potongan tidak boleh melebihi harga layanan'
         ]);
         $potongan = $r->potongan;
 
         // GET USER ID
-        $user = User::where('email',$email)->first();
+        $user = User::where('email',$email)->orWhere('username',$email)->first();
+        if(!$user) {
+            session()->flash('danger','Email atau username tidak ditemukan');
+            return redirect()->back();
+        }
         $user_id = $user->id;
 
         $ins = new Custom_price;
@@ -76,7 +81,7 @@ class OthersController extends Controller
 
 
     public function configuration() {
-        return view('developer.configuration.index', compact('web_config'));   
+        return view('developer.configuration.index');   
     }
 
     public function configuration_update(Request $r) {
@@ -148,11 +153,9 @@ class OthersController extends Controller
         Config::updateOrCreate(['name'=>"MIN_DEPOSIT"],['value'=>$r->min_deposit]);
 
         
-        Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
         Artisan::call('route:clear');
-        Artisan::call('config:cache');
 
         session()->flash('success','Sukses mengubah konfigurasi website!');
         return redirect()->back();

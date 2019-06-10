@@ -17,11 +17,19 @@ class ProviderController extends Controller
     }
 
     public function add_post(Request $r){
+        $r->validate([
+            'name' => 'required',
+            'link' => 'required',
+            'type' => 'required',
+        ]);
     	$prov = new Provider;
     	$prov->name = $r->name;
     	$prov->api_key = $r->key;
         $prov->link = $r->link;
-    	$prov->type = $r->type;
+        $prov->type = $r->type;
+        if(isset($r->additional)) {
+    	   $prov->additional = $r->additional;
+        }
     	$prov->save();
 
     	session()->flash('success','Sukses tambah provider!');
@@ -35,11 +43,21 @@ class ProviderController extends Controller
     }
 
     public function update($id,Request $r) {
+
+        $r->validate([
+            'name' => 'required',
+            'link' => 'required',
+            'type' => 'required',
+        ]);
+        
     	$prov = Provider::find($id);
     	$prov->name = $r->name;
     	$prov->api_key = $r->key;
     	$prov->link = $r->link;
     	$prov->type = $r->type;
+        if(isset($r->additional)) {
+           $prov->additional = $r->additional;
+        }
         $prov->save();
 
     	session()->flash("success",'Sukses update data provider!');

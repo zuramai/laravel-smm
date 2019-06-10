@@ -1,0 +1,13 @@
+{
+    "name": "PTTridi/Cekmutasi",
+    "description": "Development & Integration Toolkit for Cekmutasi.co.id",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PT Trijaya Digital Grup",
+            "email": "cs@tridi.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
