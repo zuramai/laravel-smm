@@ -22,7 +22,7 @@
 		              <div class="">
                   </div>
                   <div class="card-body">
-		                <h4 class='header-title mt-0'><span>Provider</span></h4>
+		                <h4 class='header-title mt-0'><span>Daftar Provider</span></h4>
                      @if(session('success'))
 
                         <div class="alert alert-success" role="alert">
@@ -38,25 +38,28 @@
                       <table class="table table-striped table-md">
                           <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>API Key</th>
-                            <th>API Link</th>
-                            <th>Type</th>
+                            <th>Nama Provider</th>
+                            <th>Order Endpoint</th>
+                            <th>Status Endpoint</th>
                             <th>Action</th>
                           </tr>
                           @foreach($prov as $data)
                           <tr>
-                            <td>{{ $data->id }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{$data->name}}</td>
-                            <td>{{$data->api_key}}</td>
-                            <td>{{$data->link}}</td>
-                            <td>{{$data->type}}</td>
+                            @if($data->order_type == 'API')
+                                <td>{{$data->api->order_end_point}}</td>
+                                <td>{{$data->api->status_end_point}}</td>
+                            @else
+                                <td>MANUAL</td>
+                                <td>MANUAL</td>
+                            @endif
                             <td>
-                              <a href="{{ url('developer/providers/edit/'.$data->id) }}" class="btn btn-info">Edit</a>
+                              <a href="{{ url('developer/providers/edit/'.$data->api->id) }}" class="btn btn-info">Edit</a>
                               <form method="POST" class="form-delete">
                                 @method('delete')
                                 @csrf
-                                <input type="hidden" value="{{ $data->id }}" name="id">
+                                <input type="hidden" value="{{ $data->api->id }}" name="id">
                                 <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Jika menghapus provider, akan menghapus semua layanan dan kategori dengan provider tersebut">Delete</button>
                               </form>
                             </td>

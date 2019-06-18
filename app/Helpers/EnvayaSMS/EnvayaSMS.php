@@ -44,9 +44,9 @@ class EnvayaSMS
         return htmlspecialchars($val, ENT_COMPAT, 'UTF-8');
     }    
     
-    private static $request;
+    public static $request;
     
-    static function get_request()
+    public static function get_request()
     {
         if (!isset(self::$request))
         {

@@ -16,7 +16,7 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->level == 'Admin'){
+        if(Auth::user()->level == 'Admin' || Auth::user()->level == 'Developer'){
             return $next($request);
         }
         return redirect('/');

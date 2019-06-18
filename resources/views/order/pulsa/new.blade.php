@@ -100,9 +100,8 @@
   	</div>
 </div>
 
-
-
-
-
 </div>
 @endsection
+@push('scripts')
+	<script type="text/javascript" src="{{ asset('js/order_pulsa.js') }}"></script>
+@endpush

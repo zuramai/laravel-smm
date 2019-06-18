@@ -39,6 +39,18 @@
                                 <input type="text" placeholder="MANDIRI" class="form-control" name="name">
                               </div>
                               <div class="form-group">
+                                <label>Kode</label>
+                                <select name="code" class="form-control">
+                                  <option value="">Pilih salah satu</option>
+                                  <option value="bca">bca</option>
+                                  <option value="bri">bri</option>
+                                  <option value="mandiri">mandiri</option>
+                                  <option value="ovo">ovo</option>
+                                  <option value="gopay">gopay</option>
+                                  <option value="pulsa">pulsa</option>
+                                </select>
+                              </div>
+                              <div class="form-group">
                                 <label>Tipe</label>
                                 <select class="form-control" name="type">
                                   <option value="">Pilih salah satu..</option>

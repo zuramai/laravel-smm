@@ -185,6 +185,12 @@
                                     <ul class="submenu ">
                                         <li>
                                             <ul>
+                                                @if(Auth::user()->level == 'Admin' || Auth::user()->level == 'Developer')
+                                                <li><a href="{{url('staff/ticket')}}"> Kelola Tiket</a></li>
+                                                <li><a href="{{url('staff/deposit')}}"> Kelola Deposit</a></li>
+                                                <li><a href="{{url('staff/orders/sosmed')}}"> Kelola Pesanan Sosmed</a></li>
+                                                <li><a href="{{url('staff/orders/pulsa')}}"> Kelola Pesanan Pulsa</a></li>
+                                                @endif
                                                 <li><a href="{{url('staff/add_user')}}"> Tambah User</a></li>
                                                 <li><a href="{{url('staff/voucher')}}"> Kode Voucher</a></li>
                                             </ul>
@@ -250,6 +256,7 @@
                                     <ul class="submenu ">
                                         <li>
                                             <ul>
+                                                <li><a class="nav-link" href="{{ url('api/profile/doc') }}">Profile</a></li>
                                                 <li><a class="nav-link" href="{{ url('api/sosmed/doc') }}">Sosial Media</a></li>
                                                 <li><a class="nav-link" href="{{ url('api/pulsa/doc') }}">Pulsa & PPOB</a></li>
                                             </ul>
@@ -324,7 +331,7 @@
                   </table>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-info" id="btn-read" data-dismiss="modal" ">Saya sudah membaca</button>
+                  <button type="button" class="btn btn-info" id="btn-read" data-dismiss="modal" >Saya sudah membaca</button>
                 </div>
               </div>
             </div>
@@ -343,49 +350,14 @@
         <script src="{{asset('js/jquery.scrollTo.min.js')}}"></script>
         <script type="text/javascript" src="{{asset('js/sweetalert.min.js')}}"></script>
         <script src="{{asset('plugins/alertify/js/alertify.js')}}"></script>
-        @include('sweet::alert')
-
-        @if(url()->current() == url('/')  || url()->current() == url('/home'))
-        <!--Morris Chart-->
-        <script src="{{asset('plugins/morris/morris.min.js')}}"></script>
-        <script src="{{asset('plugins/raphael/raphael.min.js')}}"></script>
-        <!-- dashboard js -->
-         <script type="text/javascript">
-            function createLineChart(element, data, xkey, ykeys, labels, lineColors) {
-                Morris.Line({
-                  element: element,
-                  data: data,
-                  xkey: xkey,
-                  ykeys: ykeys,
-                  labels: labels,
-                  hideHover: 'auto',
-                  gridLineColor: '#eef0f2',
-                  resize: true, //defaulted to true
-                  lineColors: lineColors
-                });
-            }
-            var data = [
-                { y: "{{Carbon\Carbon::now()->subDays(6)->format('Y-m-d')}}", a: {{$sosmed['6_days_ago']}},b: {{$pulsa['6_days_ago']}}},
-                { y: "{{Carbon\Carbon::now()->subDays(5)->format('Y-m-d')}}", a: {{$sosmed['5_days_ago']}},b: {{$pulsa['5_days_ago']}}},
-                { y: "{{Carbon\Carbon::now()->subDays(4)->format('Y-m-d')}}", a: {{$sosmed['4_days_ago']}},b: {{$pulsa['4_days_ago']}}},
-                { y: "{{Carbon\Carbon::now()->subDays(3)->format('Y-m-d')}}", a: {{$sosmed['3_days_ago']}},b: {{$pulsa['3_days_ago']}}},
-                { y: "{{Carbon\Carbon::now()->subDays(2)->format('Y-m-d')}}", a: {{$sosmed['2_days_ago']}},b: {{$pulsa['2_days_ago']}}},
-                { y: "{{Carbon\Carbon::now()->subDays(1)->format('Y-m-d')}}", a: {{$sosmed['1_days_ago']}},b: {{$pulsa['1_days_ago']}}},
-                { y: "{{Carbon\Carbon::now()->format('Y-m-d')}}", a: {{$sosmed['now']}},b: {{$pulsa['now']}}}
-            ]
-            createLineChart('morris-line-example', data, 'y', ['a', 'b'], ['Order Sosmed', 'Order Pulsa'], ['#5985ee', '#46cd93']);
-           
-
-          </script>
-        @endif
-      <script type="text/javascript">
-        @if(session('display_news') == 1)
-          $('#exampleModal').modal('show')
-        @endif
-      </script>      
-        <!-- App js -->
         <script src="{{asset('js/app.js')}}"></script>
-        
+        @include('sweet::alert')
+        <script type="text/javascript">
+            @if(session('display_news') == 1)
+                $('#exampleModal').modal('show')
+            @endif
+        </script>      
+        <!-- App js -->
         <script type="text/javascript">
             $(document).ready(function(){
                 var csrf_token = $("meta[name='csrf-token']").attr('content');
@@ -393,193 +365,12 @@
                 if (mq.matches) {
                     $('#logo-top').attr('src', $("span").attr('data-favicon'))
                 }
-                $('#category').change(function(){
-                    console.log('a')
-                    var cat = $('#category').val();
-                    $.ajax({
-                        url: "{{url('order/sosmed/ajax/get_service')}}",
-                        type: 'POST',
-                        data: {
-                            "_token": csrf_token,
-                            "cat_id": cat
-                        },
-                        success:function(result){
-                            $('#service').html(result)
-                        }
-                    }) 
-                });
-                $('#service').change(function(){
-                    var service = $('#service').val();
-                    $.ajax({
-                        url: "{{url('order/sosmed/ajax/get_service_data')}}",
-                        type: 'POST',
-                        data: {
-                            "_token": csrf_token,
-                            "sid": service
-                        },
-                        success:function(result){
-                            $('#information').html(result)
-                        }
-                    })
-                    $.ajax({
-                        url: "{{url('order/sosmed/ajax/get_price')}}",
-                        type: 'POST',
-                        data: {
-                            "_token": csrf_token,
-                            "sid": service
-                        },
-                        success:function(result){
-                            $('#price').val(result)
-                        }
-                    })
-
-                    $.ajax({
-                      url: "{{url('order/sosmed/ajax/check_sosmed')}}",
-                      type: 'POST',
-                      data: {
-                        "_token": csrf_token,
-                        "sid": service
-                      },
-                      success: function(result) {
-                        if(result == 'custom_comment') {
-                          $('#custom_comment').css('display','block');
-                          $('#quantity').attr('readonly','true');
-                          $('#t_custom_comment').keyup(function() {
-                            var text = $("#t_custom_comment").val();   
-                            var lines = text.split(/\r|\r\n|\n/);
-                            var count = lines.length;
-                            $('#quantity').val(count);
-                            var total = $('#price').val() / 1000 * count
-                            $('#total').val(total);
-                          });
-                        }else if(result == 'likes_comment') {
-                          $('#comment_likes').css('display','block');
-                        }else{
-                          $('#comment_likes').css('display','none');
-                          $('#custom_comment').css('display','none');
-                          $('#quantity').removeAttr('readonly');
-                        }
-                      }
-                    });
-                })
-                $('#quantity').keyup(function(){
-                    var qty = $('#quantity').val();
-                    var price = $('#price').val();
-
-                    var total = price/1000 * qty;
-
-                    $('#total').val(total)
-                })
-                $('#cancel_deposit').click(function(){
-                   
-                  cancel_deposit($(this).attr('data-delete'));
-                })
-
-                $('#category_pulsa').change(function() {
-                  var category = $('#category_pulsa').val();
-                  var service = $('#service_pulsa');
-                  var operator = $('#operator_pulsa');
-                    // console.log("success");
-                  $.ajax({
-                    url: "{{url('order/pulsa/ajax/get_service_pulsa')}}",
-                    type: 'POST',
-                    data: {
-                        "_token": csrf_token,
-                        "id": category
-                    },
-                    success: function(result) {
-                      operator.html(result)
-                    }
-                  });
-                });
-
-                $('#operator_pulsa').change(function() {
-                  var category = $('#category_pulsa').val();
-                  var operator = $('#operator_pulsa').val();
-                  var service = $('#service_pulsa');
-
-                  $.ajax({
-                    url: "{{url('order/pulsa/ajax/get_type_pulsa')}}",
-                    type: 'POST',
-                    data: {
-                        "_token": csrf_token,
-                        "id": operator
-                    },
-                    success: function(result) {
-                      service.html(result)
-                    }
-                  });
-                });
-
-                $('#service_pulsa').change(function() {
-                  var service_pulsa = $('#service_pulsa').val();
-                  var price = $('#total');
-                  $.ajax({
-                    url: "{{url('order/pulsa/ajax/get_price_pulsa')}}",
-                    type: 'POST',
-                    data: {
-                        "_token": csrf_token,
-                        "id": service_pulsa
-                    },
-
-                    success: function(result) {
-                      price.val(result)
-                    }
-
-                  });
-                });
-
-                $('#type').change(function() {
-
-                  var type = $('#type').val();
-                  var method = $('#method');
-                  var newType = "AUTO";
-                  if(type == "Otomatis") 
-                    newType = "AUTO"
-                  else if(type == "Manual")
-                    newType = "MANUAL"
-
-                  $.ajax({
-                    type: "POST",
-                    url: "{{ url('deposit/get_method') }}",
-                    data: {
-                      "_token": csrf_token,
-                      "type": newType
-                    },
-                    success:function(result) {
-                      console.log(result);
-                      method.html(result);
-                    }
-                  });
-                });
-                $('#method').change(function() {
-                  var method = $('#method').val();
-                  $.ajax({
-                    url: "{{ url('deposit/get_rate') }}",
-                    method: 'POST',
-                    data: {
-                      "_token": csrf_token,
-                      "method": method
-                    },
-                    success:function(result) {
-                      $('#rate_deposit').val(result);
-                    }
-
-                  })
-                });
-
-                $('#quantity_deposit').keyup(function() {
-                  var quantity = $('#quantity_deposit').val();
-                  var rate = $('#rate_deposit').val();
-                  var get_balance = $('#get_balance'); 
-
-                  var final = quantity * rate;
-                  get_balance.val(final)
-                }); 
+                
+                
 
                 $('#btn-read').click(function(){
                     $.ajax({
-                        url: "{{ url('read_news') }}",
+                        url: "/read_news",
                         method: 'POST',
                         data: {
                           "_token": csrf_token,
@@ -590,6 +381,6 @@
           })
         </script>
         <script src="{{asset('js/custom.js')}}"></script>
-
+        @stack('scripts')
     </body>
 </html>

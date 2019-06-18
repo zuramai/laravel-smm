@@ -227,7 +227,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Alert' => UxWeb\SweetAlert\SweetAlert::class,
         'OrderPulsa' => App\Helpers\Order_pulsa::class,
-        'Cekmutasi' => PTTridi\Cekmutasi\CekmutasiFacade::class,
+        'CekmutasiBank' => PTTridi\Cekmutasi\CekmutasiFacade::class,
     ],
 
 ];

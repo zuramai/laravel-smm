@@ -1,4 +1,4 @@
-@extends('layouts.horizontal-developer')
+@extends(Auth::user()->level == "Admin"?'layouts.horizontal':'layouts.horizontal-developer')
 
 @section('content')
 <div class="container-fluid">

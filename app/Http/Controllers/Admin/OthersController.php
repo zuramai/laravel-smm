@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helpers\Environtment;
+use App\Helpers\EnvayaSMS\EnvayaSMS;
 use App\Http\Controllers\Controller;
 use App\Service_cat;
 use App\Service;
@@ -14,11 +15,13 @@ use App\User;
 use App\Activity;
 use App\Balance_history;
 use App\Custom_price;
+use App\SMSLog;
 use Carbon\Carbon;
 use App\Config;
 use Alert;
 use Auth;
 use DB;
+use Log;
 
 
 class OthersController extends Controller
@@ -161,5 +164,150 @@ class OthersController extends Controller
         return redirect()->back();
     }
 
+
+    public function envaya() {
+        $envaya = new EnvayaSMS;
+        $request = $envaya->get_request();
+        $PASSWORD = "qwerty1234";
+        $today = Carbon::today()->format('Y-m-d H:i:s');
+        $todayLastMinute = date('Y-m-d')." 23:59:59";
+
+        if (!$request->is_validated($PASSWORD))
+        {
+            header("HTTP/1.1 403 Forbidden");
+            error_log("Invalid password");    
+            echo $request->render_error_response("Invalid password");
+            return;
+        }
+        $action = $request->get_action();
+        $message = $action->message;
+        $from = $action->from;
+        $json = [
+            "events" => [
+                'event'=> 'log',
+                'messages' => [
+                    'message' => 'SMS diterima dari '.$from.'. Isi: '.$message
+                ]
+            ]
+        ];
+
+        if ($from == '858' && preg_match("/Anda mendapatkan penambahan pulsa/i", $message)) {
+            $array_message = explode(" ", $message);
+            $sent_quantity = $message[5];
+            $phone_number = $message[8];
+
+            $deposit = DB::table('deposits')->select('deposits.*','deposit_methods.name as method_name','deposit_methods.data','deposit_methods.code')
+                                    ->join('deposit_methods','deposit_methods.id','deposits.method')
+                                    ->where('deposits.status','Pending')
+                                    ->where('deposits.sender',$phone_number)
+                                    ->where('deposits.quantity',$sent_quantity)
+                                    ->where('deposit_methods.name','LIKE','%telkomsel%')
+                                    ->where('deposit_methods.type','AUTO')
+                                    ->whereBetween('deposits.created_at',[$today,$todayLastMinute])
+                                    ->first();
+
+            if($deposit) {
+                $deposit->status == 'Success';
+                $deposit->save();
+
+                $user = User::find($deposit->user_id);
+                $user->balance += $deposit->get_balance;
+                $user->save();
+
+                $balance_history = new Balance_history;
+                $balance_history->user_id = $deposit->user_id;
+                $balance_history->action = "Add Balance";
+                $balance_history->quantity = $deposit->get_balance;
+                $balance_history->desc = "Deposit Sukses ID: $deposit->id Melalui ".$deposit->method_name." Rp ".number_format($deposit->get_balance).". Saldo Sekarang: Rp ".number_format($user->balance);
+                $balance_history->save();
+
+                Log::info("Sukses Deposit ID ".$deposit->id." Rp ".$deposit->get_balance.". Saldo Sekarang: Rp ".number_format($user->balance));
+            }
+
+        } else if ($from == '168' && preg_match("/Anda menerima Pulsa dari/i", $isi_pesan)) {
+            $array_message = explode(" ", $message);
+            $sent_quantity = substr($message[6],2);
+
+            $phone_number = $message[4];
+
+            $deposit = DB::table('deposits')->select('deposits.*','deposit_methods.name as method_name','deposit_methods.data','deposit_methods.code')
+                                    ->join('deposit_methods','deposit_methods.id','deposits.method')
+                                    ->where('deposits.status','Pending')
+                                    ->where('deposits.sender',$phone_number)
+                                    ->where('deposits.quantity',$sent_quantity)
+                                    ->where('deposit_methods.name','LIKE','%xl%')
+                                    ->where('deposit_methods.type','AUTO')
+                                    ->whereBetween('deposits.created_at',[$today,$todayLastMinute])
+                                    ->first();
+
+            if($deposit) {
+                $deposit->status == 'Success';
+                $deposit->save();
+
+                $user = User::find($deposit->user_id);
+                $user->balance += $deposit->get_balance;
+                $user->save();
+
+                $balance_history = new Balance_history;
+                $balance_history->user_id = $deposit->user_id;
+                $balance_history->action = "Add Balance";
+                $balance_history->quantity = $deposit->get_balance;
+                $balance_history->desc = "Deposit Sukses ID: $deposit->id Melalui ".$deposit->method_name." Rp ".number_format($deposit->get_balance).". Saldo Sekarang: Rp ".number_format($user->balance);
+                $balance_history->save();
+
+                Log::info("Sukses Deposit ID ".$deposit->id." Rp ".$deposit->get_balance.". Saldo Sekarang: Rp ".number_format($user->balance));
+            }
+        } else {
+
+        }
+        error_log('SMS diterima dari '.$action->from.'. Isi: '.$action->message, 200);
+        return response()->json($json, 200);
+        // switch ($action->type)
+        // {
+        //     case EnvayaSMS::ACTION_INCOMING:    
+                
+        //         // Send an auto-reply for each incoming message.
+            
+        //         $type = strtoupper($action->message_type);
+        //         $isi_pesan = $action->message;
+        //      if($action->from == '858' AND preg_match("/Anda mendapatkan penambahan pulsa/i", $isi_pesan)) {
+        //          $pesan_isi = $action->message;
+        //          $insert_order = mysqli_query($db, "INSERT INTO message_tsel (content, status, date) VALUES ('$pesan_isi', 'UNREAD', '$date')");
+        //          $check_history_topup = mysqli_query($db, "SELECT * FROM deposits_history WHERE status = 'Pending' AND method = 'Telkomsel' AND date = '$date'");
+        //          if (mysqli_num_rows($check_history_topup) == 0) {
+        //                 error_log("History TopUp Not Found .");
+        //          } else {
+        //              while($data_history_topup = mysqli_fetch_assoc($check_history_topup)) {
+        //                         $id_history = $data_history_topup['id'];
+        //                         $no_pegirim = $data_history_topup['no_pengirim'];
+        //                         $username_user = $data_history_topup['user'];
+        //                         $amount = $data_history_topup['quantity'];
+        //                         $date_transfer = $data_history_topup['date'];
+        //                         $get_balance = $data_history_topup['get_balance'];
+        //                         $jumlah_transfer = $data_history_topup['jumlah_transfer'];
+        //                         $cekpesan = preg_match("/Anda mendapatkan penambahan pulsa Rp $jumlah_transfer dari nomor $no_pegirim tgl $date_transfer/i", $isi_pesan);
+        //                         if($cekpesan == true) {
+                                    
+        //                             $update_history_topup = mysqli_query($db, "UPDATE deposits_history SET status = 'Success' WHERE id = '$id_history'");
+        //                             $update_history_topup = mysqli_query($db, "UPDATE users SET balance = balance+$get_balance WHERE username = '$username_user'");
+                             
+        //                             if($update_history_topup == TRUE) {
+        //                                 error_log("Saldo $username_user Telah Ditambahkan Sebesar $get_balance");
+        //                             } else {
+        //                                 error_log("System Error");
+        //                             }
+        //                         } else {
+        //                             error_log("data Transfer Pulsa Tidak Ada");
+        //                         }
+        //                 }
+        //          }
+        //      } else {
+        //         error_log("Received $type from {$action->from}");
+        //         error_log(" message: {$action->message}");
+        //      }                     
+                
+        //         return;
+        // }
+    }
 }
 

@@ -73,15 +73,15 @@
                                         <p>Success Response:</p>
                                             <pre class="prettyprint">
                                                 {
-                                                    success: true,
-                                                    data: {
-                                                        id: 1,
-                                                        name: 'Instagram Followers Khusus Zooopedia Termurah S1',
-                                                        min: 100,
-                                                        max: 100000,
-                                                        price: 2150,
-                                                        status: 'Active',
-                                                        note: 'SUPER INSTANT, HIGH QUALITY, SILAHKAN DIORDER'
+                                                    "success": true,
+                                                    "data": {
+                                                        "id": 1,
+                                                        "name": "Instagram Followers Khusus Zooopedia Termurah S1",
+                                                        "min": 100,
+                                                        "max": 100000,
+                                                        "price": 2150,
+                                                        "status": "Active",
+                                                        "note": "SUPER INSTANT, HIGH QUALITY, SILAHKAN DIORDER"
                                                     }
                                                 }
                                             </pre>
@@ -91,8 +91,8 @@
                                             <p>Failed response:</p>
                                             <pre class="prettyprint">
                                                 {
-                                                    success: false,
-                                                    error: "Incorrect Request"
+                                                    "success": false,
+                                                    "error": "Incorrect Request"
                                                 }
                                             </pre>
                                             
@@ -149,8 +149,8 @@
                                                 </tr>
                                            
                                                 <tr>
-                                                    <td>custom_link</td>
-                                                    <td>Link post. (Hanya diperlukan jika pesan layanan Like Komentar Instagram)</td>
+                                                    <td>username</td>
+                                                    <td>Username target. (Hanya diperlukan jika pesan layanan Like Komentar Instagram)</td>
                                                 </tr>
                                             
                                         </table>
@@ -160,9 +160,9 @@
                                         <p>Success Response:</p>
                                             <pre class="prettyprint">
                                                 {
-                                                    success: true,
-                                                    data: {
-                                                        id: 2413
+                                                    "success": true,
+                                                    "data": {
+                                                        "id": 2413
                                                     }
                                                 }
                                             </pre>
@@ -172,8 +172,8 @@
                                             <p>Failed response:</p>
                                             <pre class="prettyprint">
                                                 {
-                                                    success: false,
-                                                    error: "Service not found"
+                                                    "success": false,
+                                                    "error": "Service not found"
                                                 }
                                             </pre>
                                             
@@ -221,11 +221,11 @@
                                         <p>Success Response:</p>
                                             <pre class="prettyprint">
                                                 {
-                                                    success: true,
-                                                    data: {
-                                                        status: "Success",
-                                                        start_count: 1320,
-                                                        remains: 0,
+                                                    "success": true,
+                                                    "data": {
+                                                        "status": "Success",
+                                                        "start_count": 1320,
+                                                        "remains": 0
                                                     }
                                                 }
                                             </pre>
@@ -235,8 +235,8 @@
                                             <p>Failed response:</p>
                                             <pre class="prettyprint">
                                                 {
-                                                    success: false,
-                                                    error: "API Key salah"
+                                                    "success": false,
+                                                    "error": "API Key salah"
                                                 }
                                             </pre>
                                             

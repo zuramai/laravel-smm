@@ -20,6 +20,8 @@ Auth::routes();
 Route::get('/','HomeController@index');
 Route::get('/contact', 'HomeController@contact');
 Route::get('/landing', 'HomeController@landing');
+Route::get('/check-deposit-bank', 'BankPaymentController@cron'); 
+Route::post('/check-envaya', 'Admin\OthersController@envaya'); 
 
 Route::group(['middleware'=>['auth']], function() {
 
@@ -54,14 +56,6 @@ Route::group(['middleware'=>['auth']], function() {
 	Route::get('/voucher', 'HomeController@voucher');
 	Route::post('/voucher', 'HomeController@voucher_post');
 	Route::post('/logout', 'Auth\LoginController@logout');
-
-	# ====================
-	#     	  OVO
-	# ====================
-	Route::prefix('ovo')->group(function() {
-		Route::get('login/{nohp}', 'OVOController@login');
-		Route::get('checkBalance/', 'OVOController@balance');
-	});
 
 	# ====================
 	#     ORDER MENU
@@ -163,6 +157,39 @@ Route::group(['prefix'=>'staff', 'middleware'=>['auth','ExceptMember']], functio
 	Route::delete('/voucher',"StaffController@voucher_delete");
 	Route::get('/add_user',"StaffController@add_user");
 	Route::post('/add_user',"StaffController@add_user_post");
+
+
+	Route::middleware('AdminMiddleware')->group(function() {
+
+		Route::prefix('/orders')->group(function(){
+
+			# MANAGE ORDERS SOSMED #
+			Route::prefix('/sosmed')->group(function(){
+				Route::get('/','Admin\OrderSosmedController@manage_orders_sosmed');
+				Route::get('/edit/{id}','Admin\OrderSosmedController@edit_orders_sosmed');
+				Route::post('/edit/{id}','Admin\OrderSosmedController@update_orders_sosmed');
+			});
+
+			# MANAGE ORDERS PULSA #
+			Route::prefix('/pulsa')->group(function(){
+				Route::get('/', 'Admin\OrderPulsaController@manage_orders_pulsa');
+				Route::get('/edit/{id}', 'Admin\OrderPulsaController@edit_orders_pulsa');
+				Route::post('/edit/{id}', 'Admin\OrderPulsaController@update_orders_pulsa');
+			});
+		});
+		Route::prefix('/deposit')->group(function(){
+			Route::get('/','Admin\DepositController@manage_deposit');	
+			Route::post('/accept','Admin\DepositController@accept_deposit');	
+			Route::post('/decline','Admin\DepositController@decline_deposit');
+		});
+		Route::prefix('/ticket')->group(function() {
+			Route::get('/','Admin\TicketController@ticket_index');
+			Route::post('/','Admin\TicketController@ticket_close');
+			Route::get('/{id}','Admin\TicketController@ticket_detail');
+			Route::post('/{id}','Admin\TicketController@ticket_detail_add');
+		});
+	});
+
 });
 
 
@@ -171,6 +198,15 @@ Route::group(['prefix'=>'developer', 'middleware'=>['auth','Developer'] ],functi
 	Route::get('/','AdminController@index');
 	Route::get('/report', 'AdminController@report');
 	Route::get('/activity', 'AdminController@activity');
+
+	Route::prefix('ovo')->group(function() {
+		Route::get('login','OVOController@login')->name('ovo_login');
+		Route::post('login','OVOController@login_post');
+		Route::get('verify','OVOController@verify')->name('ovo_verify');
+		Route::post('verify','OVOController@verify_post');
+		Route::get('security_code','OVOController@security_code')->name('ovo_security_code');
+		Route::post('security_code','OVOController@security_code_post');
+	});
 
 
 	Route::prefix('/configuration')->group(function() {
@@ -296,12 +332,12 @@ Route::group(['prefix'=>'developer', 'middleware'=>['auth','Developer'] ],functi
 	});
 
 	Route::prefix('providers')->group(function(){
-		Route::get('/','ProviderController@index');
-		Route::get('/add','ProviderController@add');
-		Route::post('/add','ProviderController@add_post');
-		Route::get('/edit/{id}','ProviderController@edit');
-		Route::post('/edit/{id}','ProviderController@update');
-		Route::delete('/','ProviderController@delete');
+		Route::get('/','Admin\ProviderController@index');
+		Route::get('/add','Admin\ProviderController@add');
+		Route::post('/add','Admin\ProviderController@add_post');
+		Route::get('/edit/{id}','Admin\ProviderController@edit');
+		Route::put('/edit/{id}','Admin\ProviderController@update');
+		Route::delete('/','Admin\ProviderController@delete');
 	});
 
 	Route::prefix('/news')->group(function(){
@@ -343,18 +379,29 @@ Route::middleware('auth','AjaxMiddleware')->group(function() {
 
 
 Route::prefix('api')->group(function(){
-	Route::get('/sosmed', function() {
-		return response()->json(['error'=>'Incorrect Request']);
-	});
 
+	# ====================
+	#     SOSMED API
+	# ====================
+	Route::get('/sosmed', 'APIController@incorrect_request');
 	Route::post('/sosmed', 'APIController@sosmed')->name('api_sosmed');
 	Route::get('/sosmed/doc', 'APIController@sosmed_doc');
-	Route::post('/pulsa', 'APIController@pulsa')->name('api_pulsa');
-	Route::get('/pulsa', function() {
-		return response()->json(['error'=>'Incorrect Request']);
-	});
 
+
+	# ====================
+	#     PULSA API
+	# ====================
+	Route::post('/pulsa', 'APIController@pulsa')->name('api_pulsa');
+	Route::get('/pulsa', 'APIController@incorrect_request');
 	Route::get('/pulsa/doc', 'APIController@pulsa_doc');
+
+	# ====================
+	#     PROFILE API
+	# ====================
+	Route::post('/profile', 'APIController@profile')->name('api.profile');
+	Route::get('/profile', 'APIController@incorrect_request');
+	Route::get('/profile/doc', 'APIController@profile_doc');
+
 });
 
 

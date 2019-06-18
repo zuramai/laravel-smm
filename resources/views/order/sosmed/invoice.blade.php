@@ -82,7 +82,7 @@
                                             <tr>
                                                 <td>{{$order->service->name}}</td>
                                                 <td class="text-center">{{ number_format($order->quantity) }}</td>
-                                                <td class="text-center">Rp {{number_format($order->service->price+$order->service->keuntungan)}}</td>
+                                                <td class="text-center">Rp {{number_format(($order->place_from=='WEB')?$order->service->price:$order->service->price_oper+$order->service->keuntungan)}}</td>
                                                 <td class="text-right">Rp {{ number_format($order->price) }}</td>
                                             </tr>
                                             <tr>
@@ -99,7 +99,6 @@
                                     <div class="d-print-none mo-mt-2">
                                         <div class="float-right">
                                             <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light"><i class="fa fa-print"></i></a>
-                                            <a href="#" class="btn btn-primary waves-effect waves-light">Send</a>
                                         </div>
                                     </div>
                                 </div>

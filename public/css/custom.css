@@ -66,3 +66,11 @@
 .object-fit-cover {
 	object-fit: cover;
 }
+.section-api {
+	margin-top: 20px;
+}
+.section-api-header h3 {
+	font-family: inherit;
+	font-size: 18px;	
+	text-transform: uppercase;
+}

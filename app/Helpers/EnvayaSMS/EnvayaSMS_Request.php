@@ -105,5 +105,36 @@ class EnvayaSMS_Request
             return ob_get_clean();
         }
     }
+
+    public  function is_validated($correct_password)
+    {
+        $signature = @$_SERVER['HTTP_X_REQUEST_SIGNATURE'];        
+        if (!$signature)
+        {
+            return false;
+        }
+        
+        $is_secure = (!empty($_SERVER['HTTPS']) AND filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN));
+        $protocol = $is_secure ? 'https' : 'http';
+        $full_url = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];    
+        
+        $correct_signature = $this->compute_signature($full_url, $_POST, $correct_password);           
+        
+        //error_log("Correct signature: '$correct_signature'");
+        
+        return $signature === $correct_signature;
+    }
+
+    public  function compute_signature($url, $data, $password)
+    {
+        ksort($data);
+        
+        $input = $url;
+        foreach($data as $key => $value)
+            $input .= ",$key=$value";
+        $input .= ",$password";
+        
+        return base64_encode(sha1($input, true));            
+    }
 }
  ?>

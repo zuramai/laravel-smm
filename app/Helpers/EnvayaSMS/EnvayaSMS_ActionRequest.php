@@ -27,7 +27,7 @@ class EnvayaSMS_ActionRequest extends EnvayaSMS_Request
         $this->power = @$_POST['power'];
     }
                
-    function get_action()
+    public  function get_action()
     {
         if (!$this->request_action)
         {
@@ -59,7 +59,7 @@ class EnvayaSMS_ActionRequest extends EnvayaSMS_Request
         }
     }            
     
-    function is_validated($correct_password)
+    public  function is_validated($correct_password)
     {
         $signature = @$_SERVER['HTTP_X_REQUEST_SIGNATURE'];        
         if (!$signature)
@@ -77,7 +77,7 @@ class EnvayaSMS_ActionRequest extends EnvayaSMS_Request
         
         return $signature === $correct_signature;
     }
-    function compute_signature($url, $data, $password)
+    public  function compute_signature($url, $data, $password)
     {
         ksort($data);
         

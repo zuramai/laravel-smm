@@ -171,3 +171,36 @@
 
                         </div><!-- container fluid -->
 @endsection
+@push('scripts')
+
+    <script src="{{asset('plugins/morris/morris.min.js')}}"></script>
+    <script src="{{asset('plugins/raphael/raphael.min.js')}}"></script>
+    <script type="text/javascript"> 
+        
+        function createLineChart(element, data, xkey, ykeys, labels, lineColors) {
+            Morris.Line({
+                element: element,
+                data: data,
+                xkey: xkey,
+                ykeys: ykeys,
+                labels: labels,
+                hideHover: 'auto',
+                gridLineColor: '#eef0f2',
+                resize: true, //defaulted to true
+                lineColors: lineColors
+            });
+        }
+        var data = [  
+            { y: "{{Carbon\Carbon::now()->subDays(6)->format('Y-m-d')}}", a: {{$sosmed['6_days_ago']}},b: {{$pulsa['6_days_ago']}}},
+            { y: "{{Carbon\Carbon::now()->subDays(5)->format('Y-m-d')}}", a: {{$sosmed['5_days_ago']}},b: {{$pulsa['5_days_ago']}}},
+            { y: "{{Carbon\Carbon::now()->subDays(4)->format('Y-m-d')}}", a: {{$sosmed['4_days_ago']}},b: {{$pulsa['4_days_ago']}}},
+            { y: "{{Carbon\Carbon::now()->subDays(3)->format('Y-m-d')}}", a: {{$sosmed['3_days_ago']}},b: {{$pulsa['3_days_ago']}}},
+            { y: "{{Carbon\Carbon::now()->subDays(2)->format('Y-m-d')}}", a: {{$sosmed['2_days_ago']}},b: {{$pulsa['2_days_ago']}}},
+            { y: "{{Carbon\Carbon::now()->subDays(1)->format('Y-m-d')}}", a: {{$sosmed['1_days_ago']}},b: {{$pulsa['1_days_ago']}}},
+            { y: "{{Carbon\Carbon::now()->format('Y-m-d')}}", a: {{$sosmed['now']}},b: {{$pulsa['now']}}}
+        ]
+        createLineChart('morris-line-example', data, 'y', ['a', 'b'], ['Order Sosmed', 'Order Pulsa'], ['#5985ee', '#46cd93']);
+
+
+    </script>
+@endpush

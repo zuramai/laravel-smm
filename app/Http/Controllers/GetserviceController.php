@@ -9,6 +9,9 @@ use App\Service;
 use App\Service_cat;
 use App\Oprator;
 use App\Provider;
+use App\ApiRequestParam;
+use App\ApiRequestHeader;
+use App\API;
 
 class GetserviceController extends Controller
 {
@@ -111,7 +114,7 @@ class GetserviceController extends Controller
 		$json_result = json_decode($result,true);
 		// echo $json_result['message']['code'];
 		// print_r($json_result);
-// 		dd($json_result);
+		// dd($json_result);
 		for($i = 0; $i < count($json_result['message']); $i++)
 		{
 		    $code =  $json_result['message'][$i]['code'];
@@ -157,14 +160,17 @@ class GetserviceController extends Controller
     }
 
     public function portalpulsa_cat() {
-    	$url = 'https://portalpulsa.com/api/connect/';
-
+    	$api = API::where('name','PORTALPULSA')->firstOrFail();
+    	$ApiRequestHeader = ApiRequestHeader::where('api_id', $api->id)->pluck('header_value','header_key');
+    	$ApiRequestParam = ApiRequestParam::where('api_id', $api->id)->get();
+    	$url = $api->order_end_point;;
 		$header = array(
-                'portal-userid: P19231',
-                'portal-key: dea373107d9cbaa88e10d67ac6dba65a', // lihat hasil autogenerate di member area
-                'portal-secret: b33feb6506c672544a395f7289a88f107c1c5599d482ffbb8b6367b7f2b51cee', // lihat hasil autogenerate di member area
+                'portal-userid: '.$ApiRequestHeader['portal-userid'],
+                'portal-key: '.$ApiRequestHeader['portal-key'], // lihat hasil autogenerate di member area
+                'portal-secret: '.$ApiRequestHeader['portal-secret'], // lihat hasil autogenerate di member area
                 );
 
+    	// dd($header);
 		$data = array(
 		'inquiry' => 'HARGA', // konstan
 		'code' => 'pulsa', // pilihan: pln, pulsa, game
@@ -175,7 +181,7 @@ class GetserviceController extends Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-		curl_setopt($ch, CURLOPT_POST, 1);
+		// curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		$result = curl_exec($ch);
 		$json_result = json_decode($result,true);

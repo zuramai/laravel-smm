@@ -57,7 +57,7 @@
 								<th>Price</th>
 								<th>Status</th>
 								<th>Refund</th>
-								<th>Invoice</th>
+								<th>Action</th>
 							</tr>
 								@foreach($order as $data_order)
 								<tr>
@@ -79,7 +79,7 @@
 										</span>
 									</td>
 									<td>
-										<a href="{{ url('order/sosmed/invoice/'.$data_order->id) }}" class="btn btn-primary btn-sm"><i class=" ion ion-ios-today "></i> Invoice</a>
+										<a href="{{ url('order/sosmed/invoice/'.$data_order->id) }}" class="btn btn-primary btn-sm"> Invoice</a>
 									</td>
 								</tr>
 								@endforeach

@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Helpers\EnvayaSMS
+namespace App\Helpers\EnvayaSMS;
 
 class EnvayaSMS_Action_Outgoing extends EnvayaSMS_Action
 {    

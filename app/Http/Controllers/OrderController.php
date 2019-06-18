@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Service_cat;
 use App\Custom_price;
 use App\Service;
 use Validator;
+use Log;
 use App\Services_pulsa;
 use App\Provider;
 use App\Order;
 use App\Orders_pulsa;
 use App\Oprator;
+use App\Helpers\FArray;
+use App\Helpers\SearchKey;
 use App\Helpers\Order_pulsa as OrderPulsa;
 use App\Helpers\Order_sosmed as OrderSosmed;
 use App\Activity;
@@ -19,6 +23,13 @@ use App\Balance_history;
 use Auth;
 use Alert;
 use App\User;
+use App\API;
+use App\ApiRequestParam;
+use App\ApiRequestHeader;
+use App\ApiResponseLog;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+
 
 class OrderController extends Controller
 {
@@ -48,25 +59,37 @@ class OrderController extends Controller
             session()->flash('danger','Harap pilih layanan terlebih dahulu!');
             return redirect()->back();
         }
-
+        
         $service_id = $r->service;
         $post_quantity = $r->quantity;
         $post_link = $r->target;
 
         $custom_comment = false;
-        $likes_comment = false;
+        $likes_comments = false;
         
         if (isset($r->custom_comment)) {
             $custom_comment = true;
             
-        }else if(isset($r->likes_comment)) {
-            $likes_comment = true;
+        }else if(isset($r->username)) {
+            $likes_comments = true;
         }
 
-        $data_service = Service::where('id',$service_id)->first();  
+        $data_service = Service::where('id',$service_id)->firstOrFail();  
         $pid = $data_service->pid;
         $min = $data_service->min;
         $max = $data_service->max;
+        $api_id = $data_service->provider->api_id;
+
+        $r->validate([ 
+            'service'=>'required',
+            'quantity'=>"required|integer|min:$min|max:$max"
+        ],
+        [
+            'service.required'=>'Harap pilih layanan terlebih dahulu!',
+            'quantity.required'=>'Harap isi jumlah terlebih dahulu!',
+            'min'=>"Jumlah minimal adalah $min",
+            'max'=>"Jumlah maksimal adalah $max",
+        ]);
 
         $custom_price = Custom_price::where('service_id',$data_service->id)->where('user_id',Auth::user()->id)->first();
         
@@ -83,125 +106,130 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
+
+
         
         if($data_service->type == 'custom_comment') {
             $custom_comments = $r->custom_comment;
         }else if($data_service->type == 'comment_likes') {
-            $post_links = $r->comment_likes;
+            $username = $r->username;
         }
-        $r->validate([ 
-                    'service'=>'required',
-                    'quantity'=>"required|integer|min:$min|max:$max"
-                ],
-                [
-                    'service.required'=>'Harap pilih layanan terlebih dahulu!',
-                    'quantity.required'=>'Harap isi jumlah terlebih dahulu!',
-                    'min'=>'Jumlah minimal adalah $min',
-                    'max'=>'Jumlah maksimal adalah $max',
+
+        $api = API::find($data_service->provider->api_id);
+
+        // Build api request parameters
+        $params = [];
+        $apiRequestParams = ApiRequestParam::where(['api_id' => $api_id, 'api_type' => 'order'])->get();
+        if (!$apiRequestParams->isEmpty()) {
+            foreach ($apiRequestParams as $row) {
+                if ($row->param_type === 'custom') {
+                    $params[$row->param_key] = $row->param_value;
+                } else {
+                    // If column is package id then assign package id value in api mapping
+                    if ($row->param_value == 'custom_comments' && $data_service->type == 'custom_comment') {
+                            $params[$row->param_key] = $r->custom_comment;
+                    } elseif ($row->param_value == 'username' && $data_service->type == 'comment_likes') {
+                     
+                        $params[$row->param_key] = $r->username; 
+                    } elseif ($row->param_value == 'service_id') {
+                        $params[$row->param_key] = $data_service->pid; 
+                    } elseif ($row->param_value == 'target') {
+                        $params[$row->param_key] = $post_link; 
+                    } elseif ($row->param_value == 'quantity') {
+                        $params[$row->param_key] = $post_quantity; 
+                    }
+                }
+            }
+            // create new client and make call
+            $client = new Client();
+            try {
+                // if Method is GET then change request key in Guzzle
+                $param_key = 'form_params';
+                if ($api->order_method === 'GET') {
+                    $param_key = 'query';
+                }
+
+                $res = $client->request($api->order_method, $api->order_end_point, [
+                    $param_key => $params,
+                    'headers' => ['Accept' => 'application/json'],
                 ]);
-        $api_link = $data_service->provider->link;
-        $api_key = $data_service->provider->api_key;
 
-        if($data_service->provider->name == 'IRV'){
-            $api_id = $data_service->provider->additional;
-            if(isset($r->custom_comment)) {
-                $order = OrderSosmed::irvankede($api_link, $api_key, $api_id, $pid, $post_link, $post_quantity, $custom_comments);
-            }else if(isset($r->custom_link)) {
-                $order = OrderSosmed::irvankede($api_link, $api_key, $api_id, $pid, $post_link, $post_quantity, false, $post_links);
-            }else{
-                $order = OrderSosmed::irvankede($api_link, $api_key, $api_id, $pid, $post_link, $post_quantity);
+                if ($res->getStatusCode() === 200) {
+                    $resp = $res->getBody()->getContents();
+
+                    $json_result = json_decode($resp, true);
+                    $poid = SearchKey::arraySearch($json_result, $api->order_id_key);
+                    // Response keys are equal to success response?
+                    if ($poid) {
+                        // Get orderID column from API response
+
+                        $order = new Order;
+                        $order->poid = $poid;
+                        $order->user_id = Auth::user()->id;
+                        $order->service_id = $service_id;
+                        $order->target = $post_link;
+                        $order->quantity = $post_quantity;
+                        $order->start_count = 0;
+                        $order->remains = $post_quantity;
+                        $order->price = $total_price;
+                        $order->status = 'Pending';
+                        $order->place_from = 'WEB';
+                        if($custom_comment) {
+                            $order->notes = $custom_comments;
+                        }else if($likes_comments) {
+                            $order->notes = $username;
+                        }else{
+                            $order->notes = "-";
+                        }
+                        $order->refund = 0;
+                        $order->save();
+
+                        $user->balance = $user->balance - $total_price;
+                        $user->save();
+
+                        $balance_history = new Balance_history;
+                        $balance_history->user_id = Auth::user()->id;
+                        $balance_history->action = "Cut Balance";
+                        $balance_history->quantity = $total_price;
+                        $balance_history->desc = "Melakukan Pemesanan $data_service->name Dengan Jumlah $post_quantity";
+                        $balance_history->save();
+
+                        $activity = new Activity;
+                        $activity->user_id = Auth::user()->id;
+                        $activity->type = "Order";
+                        $activity->description = "Melakukan Pemesanan $data_service->name Dengan Jumlah $post_quantity";
+                        $activity->user_agent = $r->header('User-Agent');
+                        $activity->ip = $r->ip();
+                        $activity->save();
+
+                        ApiResponseLog::create([
+                            'order_id' => $order->id,
+                            'api_id' => $api_id,
+                            'response' => $resp
+                        ]);
+
+                        Alert::success('Sukses order!','Sukses');
+                        session()->flash('success',"<b>Pesanan anda akan segera diproses.</b><br><b>ID Pesanan: </b>$order->id<br><b>Layanan:</b> $data_service->name <br> <b>Target:</b> $post_link <br> <b>Jumlah:</b> $post_quantity <br> <b>Harga:</b> Rp ".number_format($total_price));
+                        return redirect()->back();
+                    }else{
+                        Log::info($json_result);
+                        session()->flash('danger',"Error: Layanan tidak tersedia.");
+                        return redirect()->back();
+                    }
+                    
+                }
+
+            } catch (ClientException $e) {
+                Log::info($e->getMessage());
+                session()->flash('danger',"Error: Layanan tidak tersedia (2).");
+                return redirect()->back();
+
             }
-        }else if($data_service->provider->name == 'JAP') {
-            if(isset($r->custom_comment)) {
-                $order = OrderSosmed::jap($api_key, $pid, $post_link, $post_quantity, $custom_comments);
-            }else if(isset($r->custom_link)) {
-                $order = OrderSosmed::jap($api_key, $pid, $post_link, $post_quantity, false, $post_links);
-            }else{
-                $order = OrderSosmed::jap($api_key, $pid, $post_link, $post_quantity);
-            }
-        }else if($data_service->provider->name == 'BULKFOLLOWS') {
-            if(isset($r->custom_comment)) {
-                $order = OrderSosmed::bulkfollows($pid, $post_link, $post_quantity, $custom_comments);
-            }else if(isset($r->custom_link)) {
-                $order = OrderSosmed::bulkfollows($pid, $post_link, $post_quantity, false, $post_links);
-            }else{
-                $order = OrderSosmed::bulkfollows($pid, $post_link, $post_quantity);
-            }
-        }else if($data_service->provider->name == 'PERFECTSMM') {
-            if(isset($r->custom_comment)) {
-                $order = OrderSosmed::perfectsmm($pid, $post_link, $post_quantity, $custom_comments);
-            }else if(isset($r->custom_link)) {
-                $order = OrderSosmed::perfectsmm($pid, $post_link, $post_quantity, false, $post_links);
-            }else{
-                $order = OrderSosmed::perfectsmm($pid, $post_link, $post_quantity);
-            }
-        }else if($data_service->provider->name == 'MANUAL') {
-            if(isset($r->custom_comment)) {
-                $order = OrderSosmed::manual($pid, $post_link, $post_quantity, $custom_comments);
-            }else if(isset($r->custom_link)) {
-                $order = OrderSosmed::manual($pid, $post_link, $post_quantity, false, $post_links);
-            }else{
-                $order = OrderSosmed::manual($pid, $post_link, $post_quantity);
-            }
-        }else if($data_service->provider->name == 'VIPMEMBER') {
-            if(isset($r->custom_comment)) {
-                $order = OrderSosmed::vipmember($pid, $post_link, $post_quantity, $custom_comments);
-            }else{
-                $order = OrderSosmed::vipmember($pid, $post_link, $post_quantity);
-            }
-        }else if($data_service->provider->name == 'SMMINDO') {
-            $order = OrderSosmed::smmindo($pid, $post_link, $post_quantity);
-        }else{
-            $order['status'] = false;
-            $order['message'] = "Layanan tidak tersedia";
         }
         
         
-        if($order['status'] == false){
-            Alert::error('Server maintenance','Error');
-            session()->flash('danger','Error: '.$order['message']);
-            return redirect()->back();
-        }
         
-
-        $poid = $order["order_id"];    
-        $order = new Order;
-        $order->poid = $poid;
-        $order->user_id = Auth::user()->id;
-        $order->service_id = $service_id;
-        $order->target = $post_link;
-        $order->quantity = $post_quantity;
-        $order->start_count = 0;
-        $order->remains = $post_quantity;
-        $order->price = $total_price;
-        $order->status = 'Pending';
-        $order->place_from = 'WEB';
-        $order->notes = "-";
-        $order->refund = 0;
-        $order->save();
-
         
-        $user->balance = $user->balance - $total_price;
-        $user->save();
-
-        $balance_history = new Balance_history;
-        $balance_history->user_id = Auth::user()->id;
-        $balance_history->action = "Cut Balance";
-        $balance_history->quantity = $total_price;
-        $balance_history->desc = "Melakukan pemesanan sosial media sebesar Rp ".$total_price;
-        $balance_history->save();
-
-        $activity = new Activity;
-        $activity->user_id = Auth::user()->id;
-        $activity->type = "Order";
-        $activity->description = "Melakukan pemesanan sosial media sebesar Rp ".$total_price;
-        $activity->user_agent = $r->header('User-Agent');
-        $activity->ip = $r->ip();
-        $activity->save();
-
-        Alert::success('Sukses order!','Sukses');
-        session()->flash('success',"Pesanan anda akan segera diproses.<br><b>ID Pesanan: </b>$order->id<br><b>Layanan:</b> $data_service->name <br> <b>Target:</b> $post_link <br> <b>Jumlah:</b> $post_quantity <br> <b>Harga:</b> Rp ".number_format($total_price));
-        return redirect()->back();
     }
     public function get_service(Request $r){
         $service = Service::where('category_id',$r->cat_id)->where('status','Active')->orderBy('name','asc')->get();
@@ -320,76 +348,124 @@ class OrderController extends Controller
                 }
 
                
-                $api_link = $data_service->provider->link;
-                $api_key = $data_service->provider->api_key;
-
-                if($data_service->provider->name == 'IRV'){
-                    $order = OrderSosmed::irvankede($api_link, $api_key, $api_id, $pid, $post_link, $post_quantity);
-                }else if($data_service->provider->name == 'JAP') {
-                    $order = OrderSosmed::jap($api_key, $pid, $post_link, $post_quantity);
-                }else if($data_service->provider->name == 'BULKFOLLOWS') {
-                    $order = OrderSosmed::bulkfollows($pid, $post_link, $post_quantity);
-                }else if($data_service->provider->name == 'PERFECTSMM') {
-                    $order = OrderSosmed::perfectsmm($pid, $post_link, $post_quantity);
-                }else if($data_service->provider->name == 'MANUAL') {
-                    $order = OrderSosmed::manual($pid, $post_link, $post_quantity);
-                }else if($data_service->provider->name == 'VIPMEMBER') {
-                    $order = OrderSosmed::vipmember($pid, $post_link, $post_quantity);
-                }else if($data_service->provider->name == 'SMMINDO') {
-                    $order = OrderSosmed::smmindo($pid, $post_link, $post_quantity);
-                }else{
-                    $order['status'] = false;
-                    $order['message'] = "Layanan tidak tersedia";
-                }    
-
-                if($order['status'] == true) {
-                    $total_success++;
-                    $final_price += $total_price;
-
-                    $poid = $order["order_id"];    
-                    $order = new Order;
-                    $order->poid = $poid;
-                    $order->user_id = Auth::user()->id;
-                    $order->service_id = $post_service;
-                    $order->target = $post_link;
-                    $order->quantity = $post_quantity;
-                    $order->start_count = 0;
-                    $order->remains = $post_quantity;
-                    $order->price = $total_price;
-                    $order->status = 'Pending';
-                    $order->place_from = 'WEB';
-                    $order->notes = "-";
-                    $order->refund = 0;
-                    $order->save();
-
-                    
-                    $user->balance = $user->balance - $total_price;
-                    $user->save();
-
-                    $balance_history = new Balance_history;
-                    $balance_history->user_id = Auth::user()->id;
-                    $balance_history->action = "Cut Balance";
-                    $balance_history->quantity = $total_price;
-                    $balance_history->desc = "Melakukan pemesanan sosial media sebesar Rp ".$total_price;
-                    $balance_history->save();
-
-                    $activity = new Activity;
-                    $activity->user_id = Auth::user()->id;
-                    $activity->type = "Order";
-                    $activity->description = "Melakukan pemesanan sosial media sebesar Rp ".$total_price;
-                    $activity->user_agent = $r->header('User-Agent');
-                    $activity->ip = $r->ip();
-                    $activity->save();
-                }else{
-                    $total_error++;
+                if($data_service->type == 'custom_comment') {
+                    $custom_comments = $r->custom_comment;
+                }else if($data_service->type == 'comment_likes') {
+                    $username = $r->username;
                 }
+
+
+                
+
+                $api = API::find($data_service->provider->api->id);
+
+                // Build api request parameters
+                $params = [];
+                $apiRequestParams = ApiRequestParam::where(['api_id' => $api->id, 'api_type' => 'order'])->get();
+                if (!$apiRequestParams->isEmpty()) {
+                    foreach ($apiRequestParams as $row) {
+                        if ($row->param_type === 'custom') {
+                            $params[$row->param_key] = $row->param_value;
+                        } else {
+                            // If column is package id then assign package id value in api mapping
+                            if ($row->param_value == 'custom_comments' && $data_service->type == 'custom_comment') {
+                                    $params[$row->param_key] = $r->custom_comment;
+                            } elseif ($row->param_value == 'username' && $data_service->type == 'comment_likes') {
+                             
+                                $params[$row->param_key] = $r->username; 
+                            } elseif ($row->param_value == 'id') {
+                                $params[$row->param_key] = $data_service->pid; 
+                            } elseif ($row->param_value == 'target') {
+                                $params[$row->param_key] = $post_link; 
+                            } elseif ($row->param_value == 'quantity') {
+                                $params[$row->param_key] = $post_quantity; 
+                            }
+                        }
+                    }
+                    // create new client and make call
+                    $client = new Client();
+                    try {
+                        // if Method is GET then change request key in Guzzle
+                        $param_key = 'form_params';
+                        if ($api->order_method === 'GET') {
+                            $param_key = 'query';
+                        }
+
+                        $res = $client->request($api->order_method, $api->order_end_point, [
+                            $param_key => $params,
+                            'headers' => ['Accept' => 'application/json'],
+                        ]);
+
+                        if ($res->getStatusCode() === 200) {
+                            $resp = $res->getBody()->getContents();
+                            $json_result = json_decode($resp, true);
+                            $poid = SearchKey::arraySearch($json_result, $api->order_id_key);
+                            // dd($api->order_success_response);
+                            // Response keys are equal to success response?
+                            if ($poid) {
+                                // Get orderID column from API response
+
+                                $order = new Order;
+                                $order->poid = $poid;
+                                $order->user_id = Auth::user()->id;
+                                $order->service_id = $data_service->id;
+                                $order->target = $post_link;
+                                $order->quantity = $post_quantity;
+                                $order->start_count = 0;
+                                $order->remains = $post_quantity;
+                                $order->price = $total_price;
+                                $order->status = 'Pending';
+                                $order->place_from = 'WEB';
+                                $order->notes = "Mass Order";
+                                $order->refund = 0;
+                                $order->save();
+
+                                $user->balance = $user->balance - $total_price;
+                                $user->save();
+
+                                $balance_history = new Balance_history;
+                                $balance_history->user_id = Auth::user()->id;
+                                $balance_history->action = "Cut Balance";
+                                $balance_history->quantity = $total_price;
+                                $balance_history->desc = "Melakukan Pemesanan $data_service->name Dengan Jumlah $post_quantity";
+                                $balance_history->save();
+
+                                $activity = new Activity;
+                                $activity->user_id = Auth::user()->id;
+                                $activity->type = "Order";
+                                $activity->description = "Melakukan Pemesanan $data_service->name Dengan Jumlah $post_quantity";
+                                $activity->user_agent = $r->header('User-Agent');
+                                $activity->ip = $r->ip();
+                                $activity->save();
+
+                                ApiResponseLog::create([
+                                    'order_id' => $order->id,
+                                    'api_id' => $api->id,
+                                    'response' => $resp
+                                ]);
+
+                                $total_success++;
+                            }else{
+                                $total_error++;
+                            }
+                            
+                        }
+
+                    } catch
+                    (ClientException $e) {
+                        $total_error++;
+
+                    }
+                } 
+
+                
 
 
             }
 
             
         } 
-        session()->flash('success',"Pesanan anda telah diterima <br>Total sukses order: $total_success <br> Total gagal order: $total_error <br> Total harga: Rp ".number_format($final_price));
+        session()->flash('success',"<b>Pesanan anda telah diterima </b> <br>Total sukses order: $total_success <br> Total gagal order: $total_error <br> Total harga: Rp ".number_format($final_price));
         return redirect()->back();
     }
 
@@ -410,8 +486,8 @@ class OrderController extends Controller
         $code = $service_pulsa->code;
         $name = $service_pulsa->name;
         $price = $service_pulsa->price + $service_pulsa->keuntungan;
+        $api_id = $service_pulsa->provider->api_id;
         $provider_name = $service_pulsa->provider->name;
-
         $provider_link = $service_pulsa->provider->link;
         $provider_key = $service_pulsa->provider->key;
 
@@ -421,71 +497,128 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
+        $api = API::findOrFail($api_id);
+        $ApiRequestHeader = ApiRequestHeader::where('api_id', $api_id)->where('api_type','order')->pluck('header_value','header_key');
+        $ApiRequestParam = ApiRequestParam::where('api_id', $api_id)->where('api_type','order')->pluck('param_value','param_key');
+        $url = $api->order_end_point;
+        
+        # INITIAL HEADERS
         if($provider_name == "PORTALPULSA") {
-            // MASUKKAN API PORTALPULSA
-            $key = $service_pulsa->provider->api_key;
-            $additional = $service_pulsa->provider->additional;
-            $explode = explode('|',$additional);
-            $user_id = $explode[0];
-            $secret = $explode[1];
-            
-
-            if(isset($r->pln)){
-                $order = OrderPulsa::portalpulsa($user_id, $key, $secret, $code, $target, $r->pln);
-            }else{
-                $order = OrderPulsa::portalpulsa($user_id, $key, $secret, $code, $target);
-            }
-
-            if($order['status'] == false) {
-                Alert::error('Server maintenance','Gagal');
-                session()->flash('danger','Gagal: Server Maintenance');
-                return redirect()->back();
-            }else{
-                $oid = $order['order_id'];
-                $poid = $oid;
-            }
+            $header = array(
+                'portal-userid: '.$ApiRequestHeader['portal-userid'],
+                'portal-key: '.$ApiRequestHeader['portal-key'], // lihat hasil autogenerate di member area
+                'portal-secret: '.$ApiRequestHeader['portal-secret'], // lihat hasil autogenerate di member area
+            );
         }else{
-            Alert::error('Hubungi admin','Failed');
-            session()->flash('danger','Provider salah, silahkan kontak admin');
+            $header = [];
+            foreach($ApiRequestHeader as $key => $value) {
+                $header[$key] = $value;
+            }
+        }  
+
+        foreach($ApiRequestParam as $key => $value) {
+            if($value == 'portalpulsa_inquiry') {
+                $inq = "I";
+                if(isset($r->pln)) {
+                    $inq = "PLN";
+                }
+                $data[$key] = $inq;
+            }else if($value == 'nometer_pln') {
+                if(isset($r->pln)) {
+                    $data[$key] = $r->pln;
+                }
+            }else if($value == 'service_id') {
+                $data[$key] = $code;
+            }else if($value == "phone"){
+                $data[$key] = $target;
+            }else if($value == "portalpulsa_trxid"){
+                $poid = rand(100000,10000000);
+                $data[$key] = $poid;
+            }else if($value == "portalpulsa_no"){
+                $no = 1;
+                $check = Orders_pulsa::where('data',$target)->where('created_at',Carbon::today()->format('Y-m-d'))->first();
+                if($check) {
+                    $no += 1;
+                }
+                $data[$key] = $no;
+            }else{
+                $data[$key] = $value;
+            }
+        } 
+        // dd($data);
+
+        # INITIAL PARAMETER
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $result = curl_exec($ch);
+        $json_result = json_decode($result, true);
+        // dd($json_result);
+        
+        // Response keys are equal to success response?
+
+        if($provider_name != "PORTALPULSA") {
+            $poid = SearchKey::arraySearch($json_result, $api->order_id_key);
+            if($json_result['result'] != 'success') {
+                Alert::error('Layanan tidak tersedia','Error');
+                session()->flash('danger',"Error: ".$json_result['message']);
+                return redirect()->back();
+            }
+        }
+        // Response keys are equal to success response?
+        if ($poid) {
+            // Get orderID column from API response
+
+            $order = new Orders_pulsa;
+            $order->oid = $poid;
+            $order->poid = $poid;
+            $order->user_id = Auth::user()->id;
+            $order->service_id = $service_pulsa->id;
+            $order->price = $price;
+            $order->data = $target;
+            $order->sn = "";
+            $order->status = 'Pending';
+            $order->place_from = 'WEB';
+            $order->refund = 0;
+            $order->save();
+
+            $user = User::find(Auth::user()->id);
+            $user->balance = $user->balance - $price;
+            $user->save();
+
+            $balance_history = new Balance_history;
+            $balance_history->user_id = Auth::user()->id;
+            $balance_history->action = "Cut Balance";
+            $balance_history->quantity = $price;
+            $balance_history->desc = "Melakukan Pemesanan $name Rp $price (Order ID: $poid)";
+            $balance_history->save();
+
+            $activity = new Activity;
+            $activity->user_id = Auth::user()->id;
+            $activity->type = "Order";
+            $activity->description = "Melakukan Pemesanan $name Rp $price (Order ID: $poid)";
+            $activity->user_agent = $r->header('User-Agent');
+            $activity->ip = $r->ip();
+            $activity->save();
+
+            ApiResponseLog::create([
+                'order_id' => $order->id,
+                'api_id' => $api_id,
+                'response' => $result
+            ]);
+
+            Alert::success('Sukses melakukan pemesanan!','Sukses');
+            session()->flash('success','<b>Pesanan telah diterima!</b> <br> <b>Layanan</b>: '.$name.' <br> <b>Harga:</b> Rp '.number_format($price).'<br><b>Tujuan:</b> '.$target);
+            return redirect()->back();
+        }else{
+            Alert::error('Layanan tidak tersedia','Error');
+            session()->flash('danger',"Error: Layanan tidak tersedia");
             return redirect()->back();
         }
-
-        $insert = new Orders_pulsa;
-        $insert->oid = $oid;
-        $insert->poid = $poid;
-        $insert->user_id = Auth::user()->id;
-        $insert->service_id = $service_pulsa->id;
-        $insert->price = $price;
-        $insert->data = $target;
-        $insert->sn = "";
-        $insert->status = 'Pending';
-        $insert->place_from = 'WEB';
-        $insert->refund = 0;
-        $insert->save();
-
-        $user = User::find(Auth::user()->id);
-        $user->balance = $user->balance - $price;
-        $user->save();
-
-        $balance_history = new Balance_history;
-        $balance_history->user_id = Auth::user()->id;
-        $balance_history->action = "Cut Balance";
-        $balance_history->quantity = $price;
-        $balance_history->desc = "Melakukan pemesanan $name seharga $price";
-        $balance_history->save();
-
-        $activity = new Activity;
-        $activity->user_id = Auth::user()->id;
-        $activity->type = "Order";
-        $activity->description = "Melakukan pemesanan $name seharga $price";
-        $activity->user_agent = $r->header('User-Agent');
-        $activity->ip = $r->ip();
-        $activity->save();
-
-        Alert::success('Sukses melakukan pemesanan!','Sukses');
-        session()->flash('success','<b>Pesanan telah diterima!</b> <br> <b>Layanan</b>: '.$name.' <br> <b>Harga:</b> Rp '.number_format($price).'<br><b>Tujuan:</b> '.$target);
-        return redirect()->back();
-        
     }
     public function pulsa_history(Request $r){
         $search = $r->get('search');

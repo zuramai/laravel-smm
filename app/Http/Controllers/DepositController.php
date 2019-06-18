@@ -75,7 +75,7 @@ class DepositController extends Controller
         $activity->save();  
 
         if($type == 'Manual'){
-            session()->flash('success',"<b>Permintaan deposit diterima</b><br> <b>Tujuan transfer:</b> $data $note <br><b>  Nominal transfer: Rp </b> ".number_format($send_quantity)." <br> <b>Dapat saldo:</b> ".number_format($get_balance)."<br> Jika sudah melakukan transfer silahkan hubungi admin di <a href='/contact'>Halaman Kontak</a>");
+            session()->flash('success',"<b>Permintaan deposit diterima</b><br> <b>Tujuan transfer:</b> $data $note <br><b>  Nominal transfer:</b> Rp  ".number_format($send_quantity)." <br> <b>Dapat saldo:</b> ".number_format($get_balance)."<br> Jika sudah melakukan transfer silahkan hubungi admin di <a href='/contact'>Halaman Kontak</a>");
             Alert::success('Sukses membuat deposit','Sukses!');
             return redirect()->back();
         }else{

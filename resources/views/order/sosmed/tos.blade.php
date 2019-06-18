@@ -2,27 +2,27 @@
 
 @section('content')
 <div class="container-fluid">
-<section class="section">
-          <div class="section-header">
-            <h1>New order</h1>
-            <div class="section-header-breadcrumb">
-              <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-              <div class="breadcrumb-item"><a href="#">Order</a></div>
-              <div class="breadcrumb-item"><a href="#">Sosial Media</a></div>
-				<div class="breadcrumb-item">Riwayat Pemesanan</div>
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="page-title-box d-print-none">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+            			<h1>Terms Of Service</h1>
+                    </div>
+                </div>
+                
             </div>
-          </div>
+        </div>
+    </div>
 
           <div class="section-body">
           
           	<div class="row">
           		<div class="col-12">
           			<div class="card">
-		              <div class="">
-		                <h4 class='header-title mt-0'><span>Terms Of Service</span></h4>
-		              </div>
 		             
 		              <div class="card-body">
+		                <h4 class='header-title mt-0'><span>Terms Of Service</span></h4>
 		              	<p>Format Pengisian Link / Target yang Benar</p>
 						<p>Berikut adalah Contoh Format Pengisian Link / Target yang baik dan benar di menu order Toko Instagram. Harap dicermati dengan baik jika belum mengerti untuk kelancaran Order. </p>
 						<p>Pastikan juga Akun tidak di private dan posting wajib bersifat Publik, berlaku untuk semua layanan.</p>

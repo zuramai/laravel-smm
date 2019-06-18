@@ -42,7 +42,7 @@
                                 <label>Tipe Layanan</label>
                                 <select name="type" class="form-control">
                                   <option>Pilih tipe..</option>
-                                  <option value="Basic">Layanan biasa</option>
+                                  <option value="Basic">Layanan Default</option>
                                   <option value="Custom Comment">Custom Comment</option>
                                   <option value="Comment Likes">Comment Likes</option>
                                 </select>
@@ -79,12 +79,12 @@
                                     <input type="number" name="price" class="form-control">
                                   </div>
                                   <div class="col">
-                                    <label>Keuntungan</label>
-                                    <input type="number" name="keuntungan" class="form-control">
-                                  </div>
-                                  <div class="col">
                                     <label>Harga khusus API</label>
                                     <input type="number" name="price_oper" class="form-control">
+                                  </div>
+                                  <div class="col">
+                                    <label>Keuntungan</label>
+                                    <input type="number" name="keuntungan" class="form-control">
                                   </div>
                                 </div>
                               </div>

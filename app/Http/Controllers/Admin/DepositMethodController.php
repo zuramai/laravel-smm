@@ -29,12 +29,14 @@ class DepositMethodController extends Controller
 
         $r->validate([
             'name' => 'required',
+            'code' => 'required|in:bca,bri,mandiri,ovo,gopay,pulsa',
             'type' => 'required',
             'rate' => 'required',
             'rekening' => 'required',
             'keterangan' => 'required',
         ]);
         $name = $r->name;
+        $code = $r->code;
         $type = $r->type;
         $rate = $r->rate;
         $keterangan = $r->keterangan;
@@ -44,6 +46,7 @@ class DepositMethodController extends Controller
 
         $method = new Deposit_method;
         $method->name = $name;
+        $method->code = $code;
         $method->type = $type;
         $method->rate = $rate;
         $method->data = $rekening;
@@ -64,12 +67,14 @@ class DepositMethodController extends Controller
             'name' => 'required',
             'type' => 'required',
             'rate' => 'required',
+            'code' => 'required|in:bca,bri,mandiri,ovo,gopay,pulsa',
             'rekening' => 'required',
             'keterangan' => 'required',
         ]);
         $name = $r->name;
         $type = $r->type;
         $rate = $r->rate;
+        $code = $r->code;
         $keterangan = $r->keterangan;
         $rekening = $r->rekening;
         $status = $r->status;
@@ -77,6 +82,7 @@ class DepositMethodController extends Controller
         $method = Deposit_method::find($id);
         $method->name = $name;
         $method->type = $type;
+        $method->code = $code;
         $method->rate = $rate;
         $method->data = $rekening;
         $method->note = $keterangan;

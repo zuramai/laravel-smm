@@ -44,6 +44,18 @@
                                 <input type="text" name="rate" placeholder="No rate = 1" class="form-control" value="{{ $method->rate }}">
                               </div>
                               <div class="form-group">
+                                <label>Kode</label>
+                                <select name="code" class="form-control">
+                                  <option value="">Pilih salah satu</option>
+                                  <option value="bca" {{ ($method->code == 'bca') ? 'selected' : '' }}>bca</option>
+                                  <option value="bri" {{ ($method->code == 'bri') ? 'selected' : '' }}>bri</option>
+                                  <option value="mandiri" {{ ($method->code == 'mandiri') ? 'selected' : '' }}>mandiri</option>
+                                  <option value="ovo" {{ ($method->code == 'ovo') ? 'selected' : '' }}>ovo</option>
+                                  <option value="gopay" {{ ($method->code == 'gopay') ? 'selected' : '' }}>gopay</option>
+                                  <option value="pulsa" {{ ($method->code == 'pulsa') ? 'selected' : '' }}>pulsa</option>
+                                </select>
+                              </div>
+                              <div class="form-group">
                                 <label>Nomor Tujuan / Rekening</label>
                                 <input type="text" name="rekening" placeholder="512315213 A/N UMAM" value="{{ $method->data }}" class="form-control">
                               </div>

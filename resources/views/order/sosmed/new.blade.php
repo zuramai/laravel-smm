@@ -68,7 +68,7 @@
 		                    	</div>
 		                    	<div class="form-group" id="comment_likes"  style="display: none">
 			                    	<label>Username</label>
-			                    	<input type="text" class="form-control" name="comment_likes" placeholder="Masukkan username yang melakukan komentar">
+			                    	<input type="text" class="form-control" name="username" placeholder="Masukkan username yang melakukan komentar">
 		                    	</div>
 		                    </div>
 		                    <input type="hidden" name="price" id="price">
@@ -109,3 +109,6 @@
 
 </div>
 @endsection
+@push('scripts') 
+	<script type="text/javascript" src="{{ asset('js/order_sosmed.js') }}"></script>
+@endpush

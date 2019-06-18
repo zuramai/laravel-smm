@@ -22,7 +22,7 @@
                   <div class="">
                   </div>
                   <div class="card-body">
-                    <h4 class='header-title mt-0'><span>Kelola Metode Deposit Pulsa</span></h4>
+                    <h4 class='header-title mt-0'><span>Kelola Metode Deposit </span></h4>
                      @if(session('success'))
 
                         <div class="alert alert-success" role="alert">
@@ -40,8 +40,9 @@
                       <table class="table table-striped table-md">
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Type</th>
+                            <th>Nama</th>
+                            <th>Kode</th>
+                            <th>Tipe</th>
                             <th>Data</th>
                             <th>Rate</th>
                             <th>Status</th>
@@ -51,6 +52,7 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{$method->name}}</td>
+                            <td>{{$method->code}}</td>
                             <td>{{$method->type}}</td>
                             <td>{{$method->data}} ({{$method->note}})</td>
                             <td>{{$method->rate}}</td>

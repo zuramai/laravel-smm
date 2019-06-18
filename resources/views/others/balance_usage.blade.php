@@ -27,7 +27,7 @@
 								<tr>
 									<th>#</th>
 									<th>Action</th>
-									<th>Username</th>
+									<th>Nominal</th>
 									<th>Deskripsi</th>
 									<th>Tanggal</th>
 								</tr>
@@ -39,7 +39,7 @@
 												{{ $history->action }}
 											</span>
 										</td>
-										<td>{{ $history->user->name }}</td>
+										<td>Rp {{ number_format($history->quantity,0,'.','.') }}</td>
 										<td>{{ $history->desc }}</td>
 										<td>{{ date('d F Y H:i:s', strtotime($history->created_at)) }}</td>
 									</tr>

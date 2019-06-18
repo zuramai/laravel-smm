@@ -1,4 +1,4 @@
-@extends('layouts.horizontal-developer')
+@extends(Auth::user()->level == "Admin"?'layouts.horizontal':'layouts.horizontal-developer')
 
 @section('content')
 <div class="container-fluid">
@@ -70,7 +70,11 @@
                                     <td>{{ $order->service->provider->name }}</td>
                                     <td><span class="badge badge-{{ ($order->status === 'Pending') ? 'warning' : (($order->status == 'Error' || $order->status == 'Partial') ? 'danger' : (($order->status == 'Processing') ? 'primary' : 'success')) }}">{{ $order->status }}</span></td>
                                     <td style="display: inline-block;">
+                                      @if(Auth::user()->level == 'Admin')
+                                        <a href="{{ url('staff/orders/sosmed/edit/'.$order->id)}}" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                      @else
                                         <a href="{{ url('developer/orders/sosmed/edit/'.$order->id)}}" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                      @endif
                                     
 
                                     </td>

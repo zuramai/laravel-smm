@@ -16,7 +16,7 @@ class Order_pulsa {
         $check = Orders_pulsa::where('data',$target)->where('created_at',Carbon::today())->first();
         if($check) {
             $no += 1;
-        }
+        }   
 
         $header = array(
         'portal-userid: '.$user_id,

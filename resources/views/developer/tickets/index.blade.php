@@ -1,4 +1,4 @@
-@extends('layouts.horizontal-developer')
+@extends(Auth::user()->level == "Admin"?'layouts.horizontal':'layouts.horizontal-developer')
 
 @section('content')
 <div class="container-fluid">
@@ -58,7 +58,7 @@
 									<td>
 										<span class="badge badge-{{($ticket->status == 'Open'?'success':($ticket->status == 'Closed'?'danger':'info'))}}">{{ $ticket->status }}
 									</td>
-									<td class="form-delete">
+									<td class="d-inline-block">
 										<a href="{{ url('/developer/ticket/'.$ticket->id) }}" class="btn btn-secondary">
 											<i class="fas fa-eye"></i>
 										</a>

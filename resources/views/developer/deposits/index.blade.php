@@ -1,5 +1,4 @@
-@extends('layouts.horizontal-developer')
-
+@extends(Auth::user()->level == "Admin"?'layouts.horizontal':'layouts.horizontal-developer')
 @section('content')
 <div class="container-fluid">
 <div class="row">
@@ -66,7 +65,7 @@
                             <td><span class="badge badge-{{ ($data->status=='Success' ? 'success' : ($data->status == 'Pending' ? 'warning' : 'danger')) }}">{{$data->status}}</span></td>
                             <td>
                               @if($data->status != "Success")
-                              <form method="POST" class="form-delete" action="{{ url('developer/deposit/accept') }}">
+                              <form method="POST" class="form-delete" action="{{ url( (Auth::user()->level == 'Developer') ? 'developer/deposit/accept' : 'staff/deposit/accept') }}">
                                 @csrf
                                 <input type="hidden" value="{{ $data->id }}" name="id">
                                 <button type="submit" class="btn btn-info"  data-delete='{{ $data->id }}' name="accept">
@@ -74,7 +73,7 @@
                                 </button>
                               </form>
                               @endif
-                              <form method="POST" class="form-delete" action="{{ url('developer/deposit/decline') }}">
+                              <form method="POST" class="form-delete" action="{{ (Auth::user()->level == 'Developer') ? url('developer/deposit/decline') : url('staff/deposit/decline') }}">
                                 @csrf
                                 <input type="hidden" value="{{ $data->id }}" name="id">
                                 <button type="submit" class="btn btn-danger"  name="reject">
