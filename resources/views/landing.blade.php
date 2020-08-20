@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="adalah sebuah platform bisnis yang menyediakan berbagai layanan social media marketing yang bergerak terutama di Indonesia. Dengan bergabung bersama kami, Anda dapat menjadi penyedia jasa social media atau reseller social media seperti jasa penambah Followers, Likes, dll. Saat ini tersedia berbagai layanan untuk social media terpopuler seperti Instagram, Facebook, Twitter, Youtube, dll.">
+    <meta name="description" content="adalah sebuah platform bisnis yang menyediakan berbagai layanan social media marketing yang bergerak terutama di Indonesia. Dengan bergabung bersama kami, Anda dapat menjadi penyedia jasa social media atau reseller social media seperti jasa penambah Followers, Likes, dll. Saat ini tersedia berbagai layanan untuk social media te{{ config('web_config')['CURRENCY_CODE'] }}opuler seperti Instagram, Facebook, Twitter, Youtube, dll.">
 
     <link rel="shortcut icon" href="{{config('web_config')['WEB_FAVICON_URL']}}">
 
@@ -161,7 +161,7 @@
                         <h2 class="title">Tentang Kami</h2>
                         <p class="title-alt"> {{ config('web_config')['APP_NAME'] }} SMM adalah sebuah platform bisnis yang menyediakan berbagai layanan social media marketing yang bergerak terutama di Indonesia.<br>
                             Dengan bergabung bersama kami, Anda dapat menjadi penyedia jasa social media atau reseller social media seperti jasa penambah Followers, Likes, dll.<br>
-                        Saat ini tersedia berbagai layanan untuk social media terpopuler seperti Instagram, Facebook, Twitter, Youtube, dll.</p>
+                        Saat ini tersedia berbagai layanan untuk social media te{{ config('web_config')['CURRENCY_CODE'] }}opuler seperti Instagram, Facebook, Twitter, Youtube, dll.</p>
                         <div class="text-center">
                             <a href="{{ url('/login') }}" class="btn btn-dark">Masuk</a> 
                             <a href="{{ url('/register') }}" class="btn btn-dark">Daftar</a> 

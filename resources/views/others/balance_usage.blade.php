@@ -39,7 +39,7 @@
 												{{ $history->action }}
 											</span>
 										</td>
-										<td>Rp {{ number_format($history->quantity,0,'.','.') }}</td>
+										<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($history->quantity,0,'.','.') }}</td>
 										<td>{{ $history->desc }}</td>
 										<td>{{ date('d F Y H:i:s', strtotime($history->created_at)) }}</td>
 									</tr>

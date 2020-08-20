@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use App\Helpers\Oper\Bulkfollows as Bulkfollows;
 use App\Helpers\Oper\PerfectSMM as PerfectSMM;
 use App\Helpers\SearchKey;
+use App\Helpers\Numberize;
 
 class Kernel extends ConsoleKernel
 {
@@ -62,7 +63,7 @@ class Kernel extends ConsoleKernel
                     $find = Orders_pulsa::find($order->id);
                     $find->refund = 1;
                     $find->save();
-
+                    
                     $user = User::find($order->user_id);
                     $user->balance += $price;
                     $user->save();
@@ -71,9 +72,9 @@ class Kernel extends ConsoleKernel
                     $balance_history->user_id = $user->id;
                     $balance_history->quantity = $price;
                     $balance_history->action = "Refund";
-                    $balance_history->desc = "Saldo dikembalikan sebesar Rp $price untuk pembelian pulsa #$id";
+                    $balance_history->desc = "Saldo dikembalikan sebesar ".config('web_config')['CURRENCY_CODE']." $price untuk pembelian pulsa #$id";
                     $balance_history->save();
-                    echo "Refunded Rp $price for order id => $id";
+                    echo "Refunded ".config('web_config')['CURRENCY_CODE']." $price for order id => $id";
                 }
             }
         });
@@ -127,6 +128,8 @@ class Kernel extends ConsoleKernel
                         }
                     }else if($value == 'service_id') {
                         $data[$key] = $code;
+                    }else if($value == 'id') {
+                        $data[$key] = $poid;
                     }else if($value == "phone"){
                         $data[$key] = $target;
                     }else if($value == "portalpulsa_trxid"){
@@ -247,7 +250,7 @@ class Kernel extends ConsoleKernel
                                 $resp = $res->getBody()->getContents();
                                 $json_result = json_decode($resp,true);
                                 $status = SearchKey::arraySearch($json_result, $api->status_key);
-                                if($status == true || $status == false) {
+                                if($status === true || $status === false) {
                                     unset($json_result[$api->status_key]);
                                 }
                                 $status = SearchKey::arraySearch($json_result, $api->status_key);
@@ -301,15 +304,18 @@ class Kernel extends ConsoleKernel
                                                         $orderPrice = $price - $refundAmount;
 
                                                         // Refund partial to user account
-                                                        $user->balance = $user->balance + $refundAmount;
-                                                        $user->save();
 
-                                                        $balance_history = new Balance_history;
-                                                        $balance_history->user_id = $user->id;
-                                                        $balance_history->action = "Refund";
-                                                        $balance_history->quantity = $refundAmount;
-                                                        $balance_history->desc = "Saldo Dikembalikan Sebesar Rp ".number_format($refundAmount)." Untuk Pemesanan Sosial Media ID #".$order->id;
-                                                        $balance_history->save();
+                                                        if(!$order->refund) {
+                                                            $user->balance = $user->balance + $refundAmount;
+                                                            $user->save();
+    
+                                                            $balance_history = new Balance_history;
+                                                            $balance_history->user_id = $user->id;
+                                                            $balance_history->action = "Refund";
+                                                            $balance_history->quantity = $refundAmount;
+                                                            $balance_history->desc = "Saldo Dikembalikan Sebesar ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($refundAmount)." Untuk Pemesanan Sosial Media ID #".$order->id;
+                                                            $balance_history->save();
+                                                        }
 
                                                         // do nothing with status but update the start_count
                                                         Order::find($order->id)->update([
@@ -329,16 +335,19 @@ class Kernel extends ConsoleKernel
 
                                                 }elseif($remains >=   $quantity){
                                                     // Refund partial to user account
-                                                        $user->balance = $user->balance + $order->price;
-                                                        $user->save();
-
-                                                        $balance_history = new Balance_history;
-                                                        $balance_history->user_id = $user->id;
-                                                        $balance_history->action = "Refund";
-                                                        $balance_history->quantity = $order->price;
-                                                        $balance_history->desc = "Saldo Dikembalikan Sebesar Rp ".number_format($order->price)." Untuk Pemesanan Sosial Media ID #".$order->id;
-                                                        $balance_history->save();
-
+                                                    
+                                                        if(!$order->refund) {
+                                                            $user->balance = $user->balance + $order->price;
+                                                            $user->save();
+                                                            
+                                                            $balance_history = new Balance_history;
+                                                            $balance_history->user_id = $user->id;
+                                                            $balance_history->action = "Refund";
+                                                            $balance_history->quantity = $order->price;
+                                                            $balance_history->desc = "Saldo Dikembalikan Sebesar ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($order->price)." Untuk Pemesanan Sosial Media ID #".$order->id;
+                                                            $balance_history->save();
+                                                        }
+                                                            
                                                         // do nothing with status but update the start_count
                                                         Order::find($order->id)->update([
                                                             'start_count' => $start_count,
@@ -358,17 +367,19 @@ class Kernel extends ConsoleKernel
                                         ])) {
 
                                             if ($api->process_all_order) {
-                                                $user = User::find($order->user_id);
-                                                $user->balance = $user->balance + $order->price;
-                                                $user->save();
+                                                
+                                                if(!$order->refund) {
+                                                    $user = User::find($order->user_id);
+                                                    $user->balance = $user->balance + $order->price;
+                                                    $user->save();
 
-                                                $balance_history = new Balance_history;
-                                                $balance_history->user_id = $user->id;
-                                                $balance_history->action = "Refund";
-                                                $balance_history->quantity = $order->price;
-                                                $balance_history->desc = "Saldo Dikembalikan Sebesar Rp ".number_format($order->price)." Untuk Pemesanan Sosial Media ID #".$order->id;
-                                                $balance_history->save();
-
+                                                    $balance_history = new Balance_history;
+                                                    $balance_history->user_id = $user->id;
+                                                    $balance_history->action = "Refund";
+                                                    $balance_history->quantity = $order->price;
+                                                    $balance_history->desc = "Saldo Dikembalikan Sebesar ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($order->price)." Untuk Pemesanan Sosial Media ID #".$order->id;
+                                                    $balance_history->save();
+                                                }
                                                 Order::find($order->id)->update([
                                                     'start_count' => $start_count,
                                                     'remains' => $remains,
@@ -382,17 +393,19 @@ class Kernel extends ConsoleKernel
                                         ])) {
 
                                             if ($api->process_all_order) {
-                                                $user = User::find($order->user_id);
-                                                $user->balance = $user->balance + $order->price;
-                                                $user->save();
+                                                
+                                                if(!$order->refund) {
+                                                    $user = User::find($order->user_id);
+                                                    $user->balance = $user->balance + $order->price;
+                                                    $user->save();
 
-                                                $balance_history = new Balance_history;
-                                                $balance_history->user_id = $user->id;
-                                                $balance_history->action = "Refund";
-                                                $balance_history->quantity = $order->price;
-                                                $balance_history->desc = "Saldo Dikembalikan Sebesar Rp ".number_format($order->price)." Untuk Pemesanan Sosial Media ID #".$order->id;
-                                                $balance_history->save();
-
+                                                    $balance_history = new Balance_history;
+                                                    $balance_history->user_id = $user->id;
+                                                    $balance_history->action = "Refund";
+                                                    $balance_history->quantity = $order->price;
+                                                    $balance_history->desc = "Saldo Dikembalikan Sebesar ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($order->price)." Untuk Pemesanan Sosial Media ID #".$order->id;
+                                                    $balance_history->save();
+                                                }
                                                 Order::find($order->id)->update([
                                                     'start_count' => $start_count,
                                                     'remains' => $remains,
@@ -499,7 +512,7 @@ class Kernel extends ConsoleKernel
                             $balance_history->user_id = $deposit->user_id;
                             $balance_history->action = "Add Balance";
                             $balance_history->quantity = $deposit->get_balance;
-                            $balance_history->desc = "Deposit Sukses Melalui ".$deposit->method_name." Rp ".$deposit->get_balance." (ID: $deposit->id)";
+                            $balance_history->desc = "Deposit Sukses Melalui ".$deposit->method_name." ".config('web_config')['CURRENCY_CODE']." ".$deposit->get_balance." (ID: $deposit->id)";
                             $balance_history->save();
 
                             echo "SUKSES DEPOSIT ID ".$deposit->id. " Nominal => ".$deposit->quantity;
@@ -511,6 +524,52 @@ class Kernel extends ConsoleKernel
 
 
         
+        # ======================
+        #     CANCEL DEPOSIT
+        # ======================
+        $schedule->call(function() {
+            echo "CANCEL DEPOSIT";
+            $deposits = Deposit::where('status','Pending')->get();;
+
+            foreach($deposits as $deposit) {
+                $created_at = $deposit->created_at;
+                $tomorrow = Carbon::parse($created_at)->addDays(1);
+                $now = Carbon::now()->format('Y-m-d H:i:s');
+                
+                if($tomorrow > $now) {
+                    $update = Deposit::find($deposit->id);
+                    $update->status = 'Canceled';
+                    $update->save();
+                }
+            }
+        });
+
+        $schedule->call(function() {
+            $license = env('LICENSE_KEY');
+            $installedLogFile = storage_path('installed');
+
+            if(!empty($license)) {
+                $header = [ 'Accept: application/json', 'Authorization: Bearer EiPSDhXlIOwbgst73Vjs' ];
+                $data = [
+                        'license' => $license
+                    ];
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'http://api.zuramai.net/api/smm');
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, 'license='.$license);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                $result = curl_exec($ch);
+                $json_result = json_decode($result);
+
+                if($json_result->status == false) {
+                    unlink(storage_path('installed'));
+                }
+            }else if(empty($license) && file_exists($installedLogFile)) {
+                unlink(storage_path('installed'));
+            }
+        })->everyMinute();
            
     }
 

@@ -294,6 +294,7 @@
                                                                     <option value="username">username (like_comment)</option>
                                                                 </optgroup>
                                                                 <optgroup label="Pulsa">
+                                                                    <option value="id">order_id</option>
                                                                     <option value="portalpulsa_inquiry">Portalpulsa Order Inquiry</option>
                                                                     <option value="portalpulsa_no">Portalpulsa no</option>
                                                                     <option value="portalpulsa_trxid">Portalpulsa trxid</option>
@@ -498,16 +499,18 @@
                 $(this).parents('tr').remove();
             }
         });
+
         $('.order-key-add').on('click', function () {
             var tr = $(this).parent('td').parent('tr').parent('tfoot').parent('table').find('tbody tr:last').clone(true, true);
             tr.find('input').val('');
-
-            // Making select box selected
+            
             $(tr).find(".order-key-type").val($('.tbl-order-request tbody tr:last').find(".order-key-type").val());
 
 
             $(tr).appendTo($(this).parent('td').parent('tr').parent('tfoot').parent('table').find('tbody'));
         });
+
+
 
         $('.order-key-type').on('change', function () {
             var v = $(this).val();

@@ -63,7 +63,7 @@
                             <td>{{ $data->category->name }}</td>
                             <td>{{ $data->min }}</td>
                             <td>{{ $data->max }}</td>
-                            <td>Rp {{ $data->price + $data->keuntungan }}</td>
+                            <td>{{ config('web_config')['CURRENCY_CODE'] }} {{ $data->price + $data->keuntungan }}</td>
                             <td><span class="badge badge-{{ $data->status=='Active' ? 'success' : 'danger' }}">{{$data->status}}</span></td>
                             <td>{{ $data->provider->name }}</td>
                             <td style="display: inline-block;">

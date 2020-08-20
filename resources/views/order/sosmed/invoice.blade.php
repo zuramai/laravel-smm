@@ -81,16 +81,16 @@
                                             <!-- foreach ($order->lineItems as $line) or some such thing here -->
                                             <tr>
                                                 <td>{{$order->service->name}}</td>
-                                                <td class="text-center">{{ number_format($order->quantity) }}</td>
-                                                <td class="text-center">Rp {{number_format(($order->place_from=='WEB')?$order->service->price:$order->service->price_oper+$order->service->keuntungan)}}</td>
-                                                <td class="text-right">Rp {{ number_format($order->price) }}</td>
+                                                <td class="text-center">{{ Numberize::make($order->quantity) }}</td>
+                                                <td class="text-center">{{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make( ($order->place_from=='WEB'?$order->service->price:$order->service->price_oper)+$order->service->keuntungan)}}</td>
+                                                <td class="text-right">{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order->price,2) }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
                                                 <td class="no-line"></td>
                                                 <td class="no-line text-center">
                                                     <strong>Total</strong></td>
-                                                <td class="no-line text-right"><h4 class="m-0">Rp {{ number_format($order->price) }}</h4></td>
+                                                <td class="no-line text-right"><h4 class="m-0">{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order->price) }}</h4></td>
                                             </tr>
                                             </tbody>
                                         </table>

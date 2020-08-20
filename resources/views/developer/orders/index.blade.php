@@ -66,7 +66,7 @@
                                     <td>{{ $order->target }}</td>
                                     <td>{{ $order->quantity }}</td>
                                     <td>{{ $order->start_count.'/'.$order->remains }}</td>
-                                    <td>Rp {{ $order->price }}</td>
+                                    <td>{{ config('web_config')['CURRENCY_CODE'] }} {{ $order->price }}</td>
                                     <td>{{ $order->service->provider->name }}</td>
                                     <td><span class="badge badge-{{ ($order->status === 'Pending') ? 'warning' : (($order->status == 'Error' || $order->status == 'Partial') ? 'danger' : (($order->status == 'Processing') ? 'primary' : 'success')) }}">{{ $order->status }}</span></td>
                                     <td style="display: inline-block;">

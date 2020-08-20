@@ -228,6 +228,7 @@ return [
         'Alert' => UxWeb\SweetAlert\SweetAlert::class,
         'OrderPulsa' => App\Helpers\Order_pulsa::class,
         'CekmutasiBank' => PTTridi\Cekmutasi\CekmutasiFacade::class,
+        'Numberize' => App\Helpers\Numberize::class,
     ],
 
 ];

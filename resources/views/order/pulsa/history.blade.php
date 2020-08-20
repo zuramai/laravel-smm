@@ -57,7 +57,7 @@
 										<td>#{{ $data_order->id }}</td>
 										<td>{{ $data_order->service->name }}</td>
 										<td>{{ $data_order->data }}</td>
-										<td>Rp {{ number_format($data_order->price) }}</td>
+										<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($data_order->price) }}</td>
 										<td>{{ $data_order->sn }}</td>
 										
 										<td><span class="badge badge-{{ ($data_order->status === 'Pending') ? 'warning' : (($data_order->status == 'Error' || $data_order->status == 'Partial') ? 'danger' : (($data_order->status == 'Processing') ? 'primary' : 'success')) }}">{{ $data_order->status }}</span></td>

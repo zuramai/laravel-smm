@@ -21,6 +21,7 @@ use App\Deposit;
 use App\Ticket;
 use App\Ticket_content;
 use App\Custom_price;
+use App\Helpers\Numberize;
 use Alert;
 use Carbon\Carbon;
 
@@ -79,7 +80,7 @@ class ServicePulsaController extends Controller
         $pulsa->status = 'Active';
         $pulsa->save();
         $kategori = $pulsa->category->name;
-        session()->flash('success',"<b>Sukses tambah layanan!</b> <br> <b>Nama:</b> $r->name <br> <b>Kategori:</b> $kategori <br> <b>Harga:</b> Rp ".number_format($pulsa->price)." <br> <b>Keuntungan:</b> ".number_format($pulsa->keuntungan)." <br>");
+        session()->flash('success',"<b>Sukses tambah layanan!</b> <br> <b>Nama:</b> $r->name <br> <b>Kategori:</b> $kategori <br> <b>Harga:</b> ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($pulsa->price)." <br> <b>Keuntungan:</b> ".Numberize::make($pulsa->keuntungan)." <br>");
         Alert::success('Sukses tambah layanan!','Sukses!');
         return redirect('developer/services_pulsa');
     }
@@ -107,7 +108,7 @@ class ServicePulsaController extends Controller
         $pulsa->save();
         $kategori = $pulsa->category->name;
 
-        session()->flash('success',"<b>Sukses ubah layanan!</b> <br> <b>Nama:</b> $r->name <br> <b>Kategori:</b> $kategori <br> <b>Harga:</b> Rp ".number_format($pulsa->price)." <br> <b>Keuntungan:</b> ".number_format($pulsa->keuntungan)." <br>");
+        session()->flash('success',"<b>Sukses ubah layanan!</b> <br> <b>Nama:</b> $r->name <br> <b>Kategori:</b> $kategori <br> <b>Harga:</b> ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($pulsa->price)." <br> <b>Keuntungan:</b> ".Numberize::make($pulsa->keuntungan)." <br>");
         Alert::success('Sukses ubah layanan!','Sukses!');
         return redirect('developer/services_pulsa');
     }

@@ -99,10 +99,10 @@
           				<div class="card-body">
           					<h4 class="mt-0 mb-4 header-title">Bantuan</h4>
           					<ol>
-          						<li><b>Harga daftarkan member:</b> Rp {{ number_format(config('web_config')['ADD_MEMBER_PRICE']) }},<br><b>Bonus saldo: </b>Rp {{number_format(config('web_config')['MEMBER_BALANCE'])}}</li>
-          						<li><b>Harga daftarkan agen:</b> Rp {{ number_format(config('web_config')['ADD_AGEN_PRICE']) }},<br><b>Bonus saldo: </b>Rp {{number_format(config('web_config')['AGEN_BALANCE'])}}</li>
-          						<li><b>Harga daftarkan reseller:</b> Rp {{ number_format(config('web_config')['ADD_RESELLER_PRICE']) }},<br><b>Bonus saldo: </b>Rp {{number_format(config('web_config')['RESELLER_BALANCE'])}}</li>
-          						<li><b>Harga daftarkan reseller:</b> Rp {{ number_format(config('web_config')['ADD_ADMIN_PRICE']) }},<br><b>Bonus saldo: </b>Rp {{number_format(config('web_config')['ADMIN_BALANCE'])}}</li>
+          						<li><b>Harga daftarkan member:</b> {{config('web_config')['CURRENCY_CODE']}} {{ Numberize::make(config('web_config')['ADD_MEMBER_PRICE']) }}<br><b>Bonus saldo: </b>{{config('web_config')['CURRENCY_CODE']}} {{Numberize::make(config('web_config')['MEMBER_BALANCE'])}}</li>
+          						<li><b>Harga daftarkan agen:</b> {{config('web_config')['CURRENCY_CODE']}} {{ Numberize::make(config('web_config')['ADD_AGEN_PRICE']) }}<br><b>Bonus saldo: </b>{{config('web_config')['CURRENCY_CODE']}} {{Numberize::make(config('web_config')['AGEN_BALANCE'])}}</li>
+          						<li><b>Harga daftarkan reseller:</b> {{config('web_config')['CURRENCY_CODE']}} {{ Numberize::make(config('web_config')['ADD_RESELLER_PRICE']) }}<br><b>Bonus saldo: </b>{{config('web_config')['CURRENCY_CODE']}} {{Numberize::make(config('web_config')['RESELLER_BALANCE'])}}</li>
+          						<li><b>Harga daftarkan reseller:</b> {{config('web_config')['CURRENCY_CODE']}} {{ Numberize::make(config('web_config')['ADD_ADMIN_PRICE']) }}<br><b>Bonus saldo: </b>{{config('web_config')['CURRENCY_CODE']}} {{Numberize::make(config('web_config')['ADMIN_BALANCE'])}}</li>
           					</ol>
           				</div>
           			</div>

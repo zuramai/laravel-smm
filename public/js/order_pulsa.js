@@ -1,5 +1,5 @@
-$('#category_pulsa').change(function() {
             var csrf_token = $("meta[name='csrf-token']").attr('content');
+$('#category_pulsa').change(function() {
           var category = $('#category_pulsa').val();
           var service = $('#service_pulsa');
           var operator = $('#operator_pulsa');

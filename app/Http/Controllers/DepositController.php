@@ -8,6 +8,7 @@ use Auth;
 use Alert;
 use App\Activity;
 use App\Deposit_method;
+use App\Helpers\Numberize;
 
 class DepositController extends Controller
 {
@@ -33,10 +34,10 @@ class DepositController extends Controller
             'sender' => 'required|string',
             'quantity' => 'required|numeric|min:'.config('web_config')['MIN_DEPOSIT']
         ],[
-            'quantity.min' => 'Minimal nominal deposit adalah Rp '.number_format(config('web_config')['MIN_DEPOSIT'])
+            'quantity.min' => 'Minimal nominal deposit adalah '.config('web_config')['CURRENCY_CODE'].' '.Numberize::make(config('web_config')['MIN_DEPOSIT'])
         ]);
         
-        $count_deposit = Deposit::where('user_id',Auth::user()->id)->count();
+        $count_deposit = Deposit::where('user_id',Auth::user()->id)->where('status','Pending')->count();
         if($count_deposit >= 3) {
             session()->flash('danger','<b>Gagal: </b>Kamu mempunyai '.$count_deposit.' deposit yang belum diselesaikan. Silahkan selesaikan terlebih dahulu.');
             return redirect()->back();
@@ -48,12 +49,19 @@ class DepositController extends Controller
         $note = $check->note;
         
         if( $check->type == 'AUTO'){
-            $unique = rand(0,2000);
-            $send_quantity = $quantity + $unique;
+            if($check->code == 'pulsa') {
+                if(substr($sender,0,1) == 0) {
+                    $sender = "62".substr($sender,1);
+                }
+                $send_quantity = $quantity;
+            }else{
+                $unique = rand(0,2000);
+                $send_quantity = $quantity + $unique;
+            }
             $get_balance = $send_quantity * $rate;
         }else{
-            $send_quantity = $quantity;
             $get_balance = $quantity * $rate;
+            $send_quantity = $quantity;
         }
         
 
@@ -69,17 +77,17 @@ class DepositController extends Controller
         $activity = new Activity;
         $activity->user_id = Auth::user()->id;
         $activity->type = "Deposit";
-        $activity->description = "Membuat permintaan deposit sebesar Rp ".$send_quantity;
+        $activity->description = "Membuat permintaan deposit sebesar ".config('web_config')['CURRENCY_CODE']." ".$send_quantity;
         $activity->user_agent = $r->header('User-Agent');
         $activity->ip = $r->ip();
         $activity->save();  
 
         if($type == 'Manual'){
-            session()->flash('success',"<b>Permintaan deposit diterima</b><br> <b>Tujuan transfer:</b> $data $note <br><b>  Nominal transfer:</b> Rp  ".number_format($send_quantity)." <br> <b>Dapat saldo:</b> ".number_format($get_balance)."<br> Jika sudah melakukan transfer silahkan hubungi admin di <a href='/contact'>Halaman Kontak</a>");
+            session()->flash('success',"<b>Permintaan deposit diterima</b><br> <b>Tujuan transfer:</b> $data $note <br><b>  Nominal transfer:</b> ".config('web_config')['CURRENCY_CODE']."  ".Numberize::make($send_quantity)." <br> <b>Dapat saldo:</b> ".Numberize::make($get_balance)."<br> Jika sudah melakukan transfer silahkan hubungi admin di <a href='/contact'>Halaman Kontak</a>");
             Alert::success('Sukses membuat deposit','Sukses!');
             return redirect()->back();
         }else{
-            session()->flash('success',"<b>Permintaan deposit diterima</b><br> <b>Tujuan transfer:</b> $data $note <br><b>  Nominal transfer: </b>Rp  ".number_format($send_quantity)." <br> <b>Dapat saldo: Rp </b> ".number_format($get_balance)."<br> Batas 4 jam dari sekarang. Jika sudah melakukan transfer silahkan tunggu 5-10 menit agar saldo masuk. Jika belum masuk juga silahkan hubungi admin di <a href='/contact'>Halaman Kontak</a>");
+            session()->flash('success',"<b>Permintaan deposit diterima</b><br> <b>Tujuan transfer:</b> $data $note <br><b>  Nominal transfer: </b>".config('web_config')['CURRENCY_CODE']."  ".Numberize::make($send_quantity)." <br> <b>Dapat saldo: ".config('web_config')['CURRENCY_CODE']." </b> ".Numberize::make($get_balance)."<br> Batas 4 jam dari sekarang. Jika sudah melakukan transfer silahkan tunggu 5-10 menit agar saldo masuk. Jika belum masuk juga silahkan hubungi admin di <a href='/contact'>Halaman Kontak</a>");
             Alert::success('Sukses membuat deposit','Sukses!');
             return redirect()->back();
         }

@@ -74,7 +74,7 @@
                                 <li class="list-inline-item dropdown notification-list">
                                     <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button"
                                     aria-haspopup="false" aria-expanded="false">
-                                        Rp {{number_format(auth()->user()->balance)}}
+                                        {{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make(auth()->user()->balance)}}
                                     </a>
                                 </li>
 

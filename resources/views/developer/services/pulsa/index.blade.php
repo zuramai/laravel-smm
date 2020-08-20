@@ -77,10 +77,10 @@
                             {{$service->oprator->name}}
                           </td>
                           <td>
-                            Rp {{number_format($service->price)}}
+                            {{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($service->price)}}
                           </td>
                           <td>
-                            Rp {{number_format($service->keuntungan)}}
+                            {{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($service->keuntungan)}}
                           </td>
                           <td>
                             <span class="badge badge-{{ ($service->status == 'Active' ? 'success' : 'danger') }}">{{$service->status}}</span>

@@ -67,7 +67,7 @@
                           <td>{{ $data->name }}</td>
                           <td>{{ $data->category->name }}</td>
                           <td>{{ $data->oprator->name }}</td>
-                          <td>Rp {{ number_format($data->price) }}</td>
+                          <td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($data->price+$data->keuntungan) }}</td>
                           <td><span class="badge badge-{{ ($data->status=='Active') ? 'success':'danger' }}">{{ $data->status }}</span></td>
                         </tr>
                         @endforeach

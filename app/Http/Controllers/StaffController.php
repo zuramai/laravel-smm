@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Numberize;
 use App\User;
 use App\Balance_history;
 use App\Voucher;
@@ -30,8 +31,8 @@ class StaffController extends Controller
         $r->validate([
             'quantity' => "required|integer|min:$min_quantity|max:$max_quantity",
         ],[
-            'quantity.min' => 'Minimum jumlah voucher adalah Rp '.$max_quantity,
-            'quantity.max' => 'Maksimum jumlah voucher adalah Rp '.$max_quantity,
+            'quantity.min' => 'Minimum jumlah voucher adalah '.config("web_config")["CURRENCY_CODE"].' '.Numberize::make($min_quantity),
+            'quantity.max' => 'Maksimum jumlah voucher adalah '.config("web_config")["CURRENCY_CODE"].' '.Numberize::make($max_quantity),
         ]);
 
         $checkBalance = User::find(Auth::user()->id);
@@ -67,19 +68,19 @@ class StaffController extends Controller
         $balance_history->user_id = Auth::user()->id;
         $balance_history->quantity = $r->quantity;
         $balance_history->action = "Cut Balance";
-        $balance_history->desc = "Pembuatan kode voucher bernilai Rp ".number_format($r->quantity);
+        $balance_history->desc = "Pembuatan kode voucher bernilai ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($r->quantity);
         $balance_history->save();
 
         $activity = new Activity;
         $activity->user_id = Auth::user()->id;
         $activity->type = "Add Voucher";
-        $activity->description = "Pembuatan kode voucher bernilai Rp ".number_format($r->quantity);
+        $activity->description = "Pembuatan kode voucher bernilai ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($r->quantity);
         $activity->user_agent = $r->header('User-Agent');
         $activity->ip = $r->ip();
         $activity->save();
 
         Alert::success('Sukses buat kode voucher','Sukses!');
-        session()->flash('success','Sukses buat kode voucher! <br> <b> Kode:</b> '.$code.' <br> <b> Nominal: </b> Rp '.number_format($r->quantity));
+        session()->flash('success','Sukses buat kode voucher! <br> <b> Kode:</b> '.$code.' <br> <b> Nominal: </b> '.config('web_config')['CURRENCY_CODE'].' '.Numberize::make($r->quantity));
         return redirect()->back();
     }
 
@@ -139,23 +140,27 @@ class StaffController extends Controller
    		$user->uplink = Auth::user()->email;
     	$user->save();
 
+        $cut = User::find(Auth::user()->id);
+        $cut->balance -= $cut_balance;
+        $cut->save();
+
     	$balance_history = new Balance_history;
         $balance_history->user_id = Auth::user()->id;
         $balance_history->action = "Cut Balance";
         $balance_history->quantity =  $cut_balance;
-        $balance_history->desc = "Pendaftaran ".$r->level." dengan email ".$r->email." seharga Rp ".number_format($cut_balance);
+        $balance_history->desc = "Pendaftaran ".$r->level." dengan email ".$r->email." seharga ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($cut_balance);
         $balance_history->save();
 
         $activity = new Activity;
         $activity->user_id = Auth::user()->id;
         $activity->type = "Add User";
-        $activity->description = "Pendaftaran ".$r->level." dengan email ".$r->email." seharga Rp ".number_format($cut_balance);
+        $activity->description = "Pendaftaran ".$r->level." dengan email ".$r->email." seharga ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($cut_balance);
         $activity->user_agent = $r->header('User-Agent');
         $activity->ip = $r->ip();
         $activity->save();
 
     	Alert::success('Sukses menambah pengguna!','Sukses!');
-    	session()->flash('success','Sukses tambah pengguna! <br> Level: '.$r->level.' <br> Email: '.$r->email.'<br> Password: '.$r->password.'<br> Saldo: '.number_format($get_balance));
+    	session()->flash('success','Sukses tambah pengguna! <br> Level: '.$r->level.' <br> Email: '.$r->email.'<br> Password: '.$r->password.'<br> Saldo: '.Numberize::make($get_balance));
     	return redirect()->back();
     }
 }

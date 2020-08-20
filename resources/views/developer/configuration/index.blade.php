@@ -97,18 +97,24 @@
                                         @if(config('web_config')['WEB_AUTH_DESCRIPTION'] == '')
                                             <h5 class="font-14 text-muted mb-4">{{config('web_config')["APP_NAME"]}}, Website Penyedia Jasa Sosial Media & Pulsa PPOB Terbaik</h5>
                                             <p class="text-muted mb-4">Dengan bergabung bersama kami, Anda dapat menjadi penyedia jasa social media atau reseller social media seperti jasa penambah Followers, Likes, dll.
-                                            Saat ini tersedia berbagai layanan untuk social media terpopuler seperti Instagram, Facebook, Twitter, Youtube, dll. Dan kamipun juga menyediakan Panel Pulsa & PPOB seperti Pulsa All Operator, Paket Data, Saldo Gojek/Grab, All Voucher Game Online, Dll.</p>
+                                            Saat ini tersedia berbagai layanan untuk social media te{{ config('web_config')['CURRENCY_CODE'] }}opuler seperti Instagram, Facebook, Twitter, Youtube, dll. Dan kamipun juga menyediakan Panel Pulsa & PPOB seperti Pulsa All Operator, Paket Data, Saldo Gojek/Grab, All Voucher Game Online, Dll.</p>
 
                                             <h5 class="font-14 text-muted mb-4">Kelebihan {{config('web_config')['APP_NAME']}} :</h5>
                                             <div>
-                                                <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>Harga Instagram Followers mulai dari Rp 100 per 1000</p>
-                                                <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>Harga Instagram Likes mulai dari Rp 0.</p>
-                                                <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>Harga Youtube Subscriber mulai dari Rp 10.000 per 1k subscriber</p>
+                                                <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>Harga Instagram Followers mulai dari {{ config('web_config')['CURRENCY_CODE'] }} 100 per 1000</p>
+                                                <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>Harga Instagram Likes mulai dari {{ config('web_config')['CURRENCY_CODE'] }} 0.</p>
+                                                <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>Harga Youtube Subscriber mulai dari {{ config('web_config')['CURRENCY_CODE'] }} 10.000 per 1k subscriber</p>
                                             </div>  
                                         @else
                                             {{config('web_config')['WEB_AUTH_DESCRIPTION']}}
                                         @endif
                                     </textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-3">Kode Mata Uang: </label>
+                                <div class="col-md-9">
+                                    <input type="text" name="currency_code" placeholder="Kode mata uang" class="form-control " value="{{ config('web_config')['CURRENCY_CODE'] }}">
                                 </div>
                             </div>
                             <div class="mt-5"></div>

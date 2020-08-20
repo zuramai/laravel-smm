@@ -330,6 +330,7 @@
                                                                                 <option value="username" {{ ($row->param_value =='username') ? 'selected' : '' }}>username (like_comment)</option>
                                                                             </optgroup>
                                                                             <optgroup label="Pulsa">
+                                                                                <option value="id" {{ ($row->param_value =='id') ? 'selected' : '' }}>order_id</option>
                                                                                 <option value="portalpulsa_inquiry" {{ ($row->param_value =='portalpulsa_inquiry') ? 'selected' : '' }}>Portalpulsa Order Inquiry</option>
                                                                                 <option value="portalpulsa_no" {{ ($row->param_value =='portalpulsa_no') ? 'selected' : '' }}>Portalpulsa no</option>
                                                                                 <option value="portalpulsa_trxid" {{ ($row->param_value =='portalpulsa_trxid') ? 'selected' : '' }}>Portalpulsa trxid</option>

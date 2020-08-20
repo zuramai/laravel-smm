@@ -59,7 +59,7 @@
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>Rp {{ number_format($user->balance) }}</td>
+                                    <td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($user->balance) }}</td>
                                     <td>{{ $user->level }}</td>
                                     <td>
                                       <span class="badge badge-{{ ($user->status =='Active' ? 'success' : 'danger') }}">{{ $user->status }}</span>

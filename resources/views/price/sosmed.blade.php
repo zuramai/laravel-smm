@@ -65,7 +65,7 @@
 										<td>{{ $data_service->category->name }}</td>
 										<td>{{ $data_service->name }}</td>
 										<td>{{ $data_service->min }}/{{ $data_service->max }}</td>
-										<td>Rp {{ number_format($data_service->price) }}</td>
+										<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($data_service->price+$data_service->keuntungan) }}</td>
 										<td><span class="badge badge-{{ ($data_service->status=='Active') ? 'success':'danger' }}">{{ $data_service->status }}</span></td>
 										<td>
 											<button type='button' href="#" class="btn btn-secondary detailSosmed">Detail</button>

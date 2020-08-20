@@ -23,6 +23,10 @@ class ConfigTableSeeder extends Seeder
                 'value' => asset('img/logo/laravelsmmv2-dark.png')
             ],
             [
+                'name' => 'WEB_FAVICON_URL',
+                'value' => asset('img/logo/fav.png')
+            ],
+            [
                 'name' => 'APP_NAME',
                 'value' => 'Laravel-SMMV2'
             ],
@@ -33,6 +37,10 @@ class ConfigTableSeeder extends Seeder
             [
                 'name' => 'WEB_DESCRIPTION',
                 'value' => 'SMM Panel Termurah dan berkualitas tinggi yang menjual jasa layanan Instagram followers,like,view sampai Layanan Youtube seperti subscriber, views, likes. Bergabunglah bersama kami dan tingkatkan penghasilan anda'
+            ],
+            [
+                'name' => 'CURRENCY_CODE',
+                'value' => 'Rp'
             ],
             [
                 'name' => 'ADD_MEMBER_PRICE',
@@ -77,10 +85,6 @@ class ConfigTableSeeder extends Seeder
             [
                 'name' => 'MIN_DEPOSIT',
                 'value' => 5000
-            ],
-            [
-                'name' => 'WEB_FAVICON_URL',
-                'value' => asset('img/logo/fav.png')
             ],
             [
                 'name' => 'WEB_AUTH_DESCRIPTION',

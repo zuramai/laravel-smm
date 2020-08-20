@@ -97,8 +97,8 @@
 										<td>#{{ $loop->iteration }}</td>
 										<td>{{ $custom_price->user->email }} ({{ $custom_price->user->name }})</td>
 										<td>{{ $custom_price->service->name }}</td>
-										<td>Rp {{ number_format($custom_price->service->price + $custom_price->service->keuntungan) }}</td>
-										<td>Rp {{ number_format($custom_price->potongan) }}</td>
+										<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($custom_price->service->price + $custom_price->service->keuntungan) }}</td>
+										<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($custom_price->potongan) }}</td>
 										<td>
 											<form method="POST" class="form-delete">
 	                                            @method('delete')

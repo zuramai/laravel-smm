@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Service;
 use App\Order;
 use Auth;
+use Log;
 use App\User;
 use App\Helpers\FArray;
 use App\Helpers\SearchKey;
@@ -167,7 +168,7 @@ class APIController extends Controller
                         } elseif ($row->param_value == 'username' && $data_service->type == 'Comment Likes') {
                          
                             $params[$row->param_key] = $r->username; 
-                        } elseif ($row->param_value == 'id') {
+                        } elseif ($row->param_value == 'service_id') {
                             $params[$row->param_key] = $data_service->pid; 
                         } elseif ($row->param_value == 'target') {
                             $params[$row->param_key] = $post_link; 
@@ -192,16 +193,17 @@ class APIController extends Controller
 
                     if ($res->getStatusCode() === 200) {
                         $resp = $res->getBody()->getContents();
+                        $json_result = json_decode($resp, true);
+                        $poid = SearchKey::arraySearch($json_result, $api->order_id_key);
 
-                        $success_response = FArray::array_cast_recursive(json_decode($api->order_success_response,true));
 
                         // Response keys are equal to success response?
-                        if (empty(FArray::array_diff_key_recursive(FArray::array_cast_recursive(json_decode($resp)), $success_response))) {
+                        if ($poid) {
                             // Get orderID column from API response
                             $json_result = json_decode($resp);
 
                             $order = new Order;
-                            $order->poid = $json_result->{$api->order_id_key};
+                            $order->poid = $poid;
                             $order->user_id = $check_key->id;
                             $order->service_id = $service_id;
                             $order->target = $post_link;
@@ -246,10 +248,9 @@ class APIController extends Controller
                             ]);
 
                         }else{
-                            $error = FArray::array_diff_key_recursive(FArray::array_cast_recursive(json_decode($resp)), $success_response);
-                            dd($error);
-                            session()->flash('danger',"Error: ".$error["error"]);
-                            return redirect()->back();
+                            Log::error($resp);
+                            Log::error($params);
+                            return response()->json(['success'=>false,'data' => "Layanan tidak tersedia"]);
                         }
                         
                         return response()->json(['success'=>true, 'data'=>['id'=>$order->id]]);
@@ -478,13 +479,13 @@ class APIController extends Controller
                 $balance_history->user_id = $check_key->id;
                 $balance_history->action = "Cut Balance";
                 $balance_history->quantity = $total_price;
-                $balance_history->desc = "Melakukan Pemesanan $service_name Rp $total_price (Order ID: $poid)";
+                $balance_history->desc = "Melakukan Pemesanan $service_name ".config('web_config')['CURRENCY_CODE']." $total_price (Order ID: $poid)";
                 $balance_history->save();
 
                 $activity = new Activity;
                 $activity->user_id = $check_key->id;
                 $activity->type = "Order";
-                $activity->description = "Melakukan Pemesanan $service_name Rp $total_price (Order ID: $poid)";
+                $activity->description = "Melakukan Pemesanan $service_name ".config('web_config')['CURRENCY_CODE']." $total_price (Order ID: $poid)";
                 $activity->user_agent = $r->header('User-Agent');
                 $activity->ip = $r->ip();
                 $activity->save();

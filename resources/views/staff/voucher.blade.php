@@ -64,7 +64,7 @@
       				<div class="card-body">
                 <h4 class="header-title mt-0"><span>Panduan</span></h4>
       					<ol>
-      						<li>Minimal nominal voucher adalah Rp {{number_format(config('web_config')['MIN_VOUCHER'])}}</li>
+      						<li>Minimal nominal voucher adalah {{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make(config('web_config')['MIN_VOUCHER'])}}</li>
       						<li>Saldo anda akan di potong sesuai nominal voucher</li>
       						<li>Saldo tidak akan dikembalikan jika menghapus voucher yang masih tersedia</li>
       					</ol>
@@ -93,7 +93,7 @@
       								<tr>
       									<td>{{ $loop->iteration  }}</td>
       									<td>{{ $voucher->code }}</td>
-      									<td>Rp {{ number_format($voucher->quantity) }}</td>
+      									<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($voucher->quantity) }}</td>
       									<td>
       										<span class="badge badge-{{ $voucher->status == 'Available' ? 'success' : 'danger' }}">{{ $voucher->status }}</span>
       									</td>

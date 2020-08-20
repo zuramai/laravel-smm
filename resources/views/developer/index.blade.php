@@ -59,7 +59,7 @@
 	            <div class="p-3 mini-stat-desc">
 	                <div class="clearfix">
 	                    <h6 class="text-uppercase mt-0 float-left text-white-50">Member Aktif</h6>
-	                    <h4 class="mb-3 mt-0 float-right">{{number_format($member['active'])}}</h4>
+	                    <h4 class="mb-3 mt-0 float-right">{{Numberize::make($member['active'])}}</h4>
 	                </div>
 	                <div>
 	                    <span>Pendaftar bulan ini: {{ $member['register_thismo'] }}</span>
@@ -70,9 +70,9 @@
 	                    <a href="#" class="text-white-50"><i class="mdi mdi-tag-text-outline h5"></i></a>
 	                </div>
 	                @if(empty($last_used_balance->created_at))
-	                <p class="font-14 m-0">Total saldo: Rp {{ number_format($member['total_saldo']->balance) }}</p>
+	                <p class="font-14 m-0">Total saldo: {{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($member['total_saldo']->balance) }}</p>
 	                @else
-	                <p class="font-14 m-0">Terakhir penggunaan: Rp number_format($last_used_balance->quantity)</p>
+	                <p class="font-14 m-0">Terakhir penggunaan: {{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($last_used_balance->quantity) }}</p>
 	                @endif
 	            </div>
 	        </div>
@@ -83,7 +83,7 @@
 	            <div class="p-3 mini-stat-desc">
 	                <div class="clearfix">
 	                    <h6 class="text-uppercase mt-0 float-left text-white-50">Keuntungan</h6>
-	                    <h4 class="mb-3 mt-0 float-right">Rp {{ number_format($order_pulsa_alltime['keuntungan']->keuntungan + $order_sosmed_alltime[0]->keuntungan) }}</h4>
+	                    <h4 class="mb-3 mt-0 float-right">{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_alltime['keuntungan']->keuntungan + $order_sosmed_alltime[0]->keuntungan) }}</h4>
 	                </div>
 	                <div>
 	                    <span class=""> Total keuntungan sosmed & pulsa </span> 
@@ -93,7 +93,7 @@
 	                <div class="float-right">
 	                    <a href="#" class="text-white-50"><i class="mdi mdi-briefcase-check h5"></i></a>
 	                </div>
-	                <p class="font-14 m-0">Bulan ini: {{number_format($order_pulsa_thismo[0]->keuntungan)}}</p>
+	                <p class="font-14 m-0">Bulan ini: {{Numberize::make($order_pulsa_thismo[0]->keuntungan)}}</p>
 	            </div>
 	        </div>
 	    </div>
@@ -109,19 +109,19 @@
 	                	<table class="table table-bordered">
 	                		<tr>
 	                			<td>Total Order:</td>
-	                			<td>{{ number_format($order_sosmed_thismo[0]->total_order) }}</td>
+	                			<td>{{ Numberize::make($order_sosmed_thismo[0]->total_order) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Nominal Order:</td>
-	                			<td>Rp {{ number_format($order_sosmed_thismo[0]->total_price) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_sosmed_thismo[0]->total_price) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Keuntungan:</td>
-	                			<td>Rp {{ number_format($order_sosmed_thismo['keuntungan']) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_sosmed_thismo['keuntungan']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Refund:</td>
-	                			<td>Rp {{ number_format($order_sosmed_thismo['refund']->quantity) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_sosmed_thismo['refund']->quantity) }}</td>
 	                		</tr>
 	                	</table>
 	                </div>
@@ -130,39 +130,39 @@
 	                	<table class="table table-bordered">
 	                		<tr>
 	                			<td>Total Order:</td>
-	                			<td>{{ number_format($order_sosmed_alltime[0]->total_order) }}</td>
+	                			<td>{{ Numberize::make($order_sosmed_alltime[0]->total_order) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Nominal Order:</td>
-	                			<td>Rp {{ number_format($order_sosmed_alltime[0]->total_price) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_sosmed_alltime[0]->total_price) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Keuntungan:</td>
-	                			<td>Rp {{ number_format($order_sosmed_alltime['keuntungan']) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_sosmed_alltime['keuntungan']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Layanan:</td>
-	                			<td>{{ number_format($services['sosmed']['total']) }}</td>
+	                			<td>{{ Numberize::make($services['sosmed']['total']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Pending:</td>
-	                			<td>{{ number_format($order_sosmed_alltime['pending']) }}</td>
+	                			<td>{{ Numberize::make($order_sosmed_alltime['pending']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Success:</td>
-	                			<td>{{ number_format($order_sosmed_alltime['success']) }}</td>
+	                			<td>{{ Numberize::make($order_sosmed_alltime['success']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Processing:</td>
-	                			<td>{{ number_format($order_sosmed_alltime['processing']) }}</td>
+	                			<td>{{ Numberize::make($order_sosmed_alltime['processing']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Error/Partial:</td>
-	                			<td>{{ number_format($order_sosmed_alltime['error']) }}</td>
+	                			<td>{{ Numberize::make($order_sosmed_alltime['error']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Refund:</td>
-	                			<td>Rp {{ number_format($order_sosmed_alltime['refund']->quantity) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_sosmed_alltime['refund']->quantity) }}</td>
 	                		</tr>
 	                	</table>
 	                </div>
@@ -178,19 +178,19 @@
 	                	<table class="table table-bordered">
 	                		<tr>
 	                			<td>Total Order:</td>
-	                			<td>{{ number_format($order_pulsa_thismo[0]->total_order) }}</td>
+	                			<td>{{ Numberize::make($order_pulsa_thismo[0]->total_order) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Nominal Order:</td>
-	                			<td>Rp {{ number_format($order_pulsa_thismo[0]->total_price) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_thismo[0]->total_price) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Keuntungan:</td>
-	                			<td>Rp {{ number_format($order_pulsa_thismo['keuntungan']->keuntungan) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_thismo['keuntungan']->keuntungan) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Refund:</td>
-	                			<td>Rp {{ number_format($order_pulsa_thismo['refund']->price) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_thismo['refund']->price) }}</td>
 	                		</tr>
 	                	</table>
 	                </div>
@@ -199,35 +199,35 @@
 	                	<table class="table table-bordered">
 	                		<tr>
 	                			<td>Total Order:</td>
-	                			<td>{{ number_format($order_pulsa_alltime[0]->total_order) }}</td>
+	                			<td>{{ Numberize::make($order_pulsa_alltime[0]->total_order) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Nominal Order:</td>
-	                			<td>Rp {{ number_format($order_pulsa_alltime[0]->total_price) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_alltime[0]->total_price) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Keuntungan:</td>
-	                			<td>Rp {{ number_format($order_pulsa_alltime['keuntungan']->keuntungan) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_alltime['keuntungan']->keuntungan) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Layanan:</td>
-	                			<td>{{ number_format($services['pulsa']['total']) }}</td>
+	                			<td>{{ Numberize::make($services['pulsa']['total']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Pending:</td>
-	                			<td>{{ number_format($order_pulsa_alltime['pending']) }}</td>
+	                			<td>{{ Numberize::make($order_pulsa_alltime['pending']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Success:</td>
-	                			<td>{{ number_format($order_pulsa_alltime['success']) }}</td>
+	                			<td>{{ Numberize::make($order_pulsa_alltime['success']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Order Error/Partial:</td>
-	                			<td>{{ number_format($order_pulsa_alltime['error']) }}</td>
+	                			<td>{{ Numberize::make($order_pulsa_alltime['error']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Refund:</td>
-	                			<td>Rp {{ number_format($order_pulsa_thismo['refund']->price) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($order_pulsa_thismo['refund']->price) }}</td>
 	                		</tr>
 	                	</table>
 	                </div>
@@ -243,11 +243,11 @@
 	                	<table class="table table-bordered">
 	                		<tr>
 	                			<td>Pendaftar baru:</td>
-	                			<td>{{ number_format($member['register_thismo']) }}</td>
+	                			<td>{{ Numberize::make($member['register_thismo']) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Total Penggunaan Saldo:</td>
-	                			<td>Rp {{ number_format($member['penggunaan_saldo']->quantity) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($member['penggunaan_saldo']->quantity) }}</td>
 	                		</tr>
 	                	</table>
 	                </div>
@@ -256,11 +256,11 @@
 	                	<table class="table table-bordered">
 	                		<tr>
 	                			<td>Total Seluruh Saldo:</td>
-	                			<td>Rp {{ number_format($member['balance_total']->balance) }}</td>
+	                			<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($member['balance_total']->balance) }}</td>
 	                		</tr>
 	                		<tr>
 	                			<td>Jumlah Pengguna:</td>
-	                			<td>{{ number_format($member['count']) }}</td>
+	                			<td>{{ Numberize::make($member['count']) }}</td>
 	                		</tr>
 	                	</table>
 	                </div>

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helpers\Environtment;
+use App\Helpers\Numberize;
 use App\Helpers\EnvayaSMS\EnvayaSMS;
 use App\Http\Controllers\Controller;
 use App\Service_cat;
@@ -16,6 +17,7 @@ use App\Activity;
 use App\Balance_history;
 use App\Custom_price;
 use App\SMSLog;
+use App\Deposit;
 use Carbon\Carbon;
 use App\Config;
 use Alert;
@@ -93,6 +95,8 @@ class OthersController extends Controller
             'web_description' => 'required',
             'login_desc' => 'required',
             
+            'currency_code' => 'required',
+
             'add_member_price' => 'required|integer|min:0',
             'add_agen_price' => 'required|integer|min:0',
             'add_reseller_price' => 'required|integer|min:0',
@@ -141,6 +145,8 @@ class OthersController extends Controller
         Config::updateOrCreate(['name'=>"WEB_DESCRIPTION"],['value'=>$r->web_description]);
         Config::updateOrCreate(['name'=>'WEB_AUTH_DESCRIPTION'],['value'=>$login_desc]);
 
+        Config::updateOrCreate(['name'=>'CURRENCY_CODE'],['value'=>$r->currency_code]);
+
         Config::updateOrCreate(['name'=>"ADD_MEMBER_PRICE"],['value'=>$r->add_member_price]);
         Config::updateOrCreate(['name'=>"ADD_AGEN_PRICE"],['value'=>$r->add_agen_price]);
         Config::updateOrCreate(['name'=>"ADD_RESELLER_PRICE"],['value'=>$r->add_reseller_price]);
@@ -171,7 +177,7 @@ class OthersController extends Controller
         $PASSWORD = "qwerty1234";
         $today = Carbon::today()->format('Y-m-d H:i:s');
         $todayLastMinute = date('Y-m-d')." 23:59:59";
-
+        Log::info("========== Envaya New Request ============");
         if (!$request->is_validated($PASSWORD))
         {
             header("HTTP/1.1 403 Forbidden");
@@ -180,88 +186,96 @@ class OthersController extends Controller
             return;
         }
         $action = $request->get_action();
-        $message = $action->message;
-        $from = $action->from;
-        $json = [
-            "events" => [
-                'event'=> 'log',
-                'messages' => [
-                    'message' => 'SMS diterima dari '.$from.'. Isi: '.$message
+
+        if($action->type == EnvayaSMS::ACTION_INCOMING) {
+            $message = $action->message;
+            $isi_pesan = $message;
+            $from = $action->from;
+            Log::info($message." From: ".$from);
+            $json = [
+                "events" => [
+                    'event'=> 'log',
+                    'messages' => [
+                        'message' => 'SMS diterima dari '.$from.'. Isi: '.$message
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        if ($from == '858' && preg_match("/Anda mendapatkan penambahan pulsa/i", $message)) {
-            $array_message = explode(" ", $message);
-            $sent_quantity = $message[5];
-            $phone_number = $message[8];
+            if ($from == '858' && preg_match("/Anda mendapatkan penambahan pulsa/i", $message)) {
+                $array_message = explode(" ", $message);
+                $sent_quantity = $array_message[5];
+                $phone_number = $array_message[8];
+                Log::info("ENVAYA FROM 858, QUANTITY => $sent_quantity, SENDER => $phone_number");
 
-            $deposit = DB::table('deposits')->select('deposits.*','deposit_methods.name as method_name','deposit_methods.data','deposit_methods.code')
-                                    ->join('deposit_methods','deposit_methods.id','deposits.method')
-                                    ->where('deposits.status','Pending')
-                                    ->where('deposits.sender',$phone_number)
-                                    ->where('deposits.quantity',$sent_quantity)
-                                    ->where('deposit_methods.name','LIKE','%telkomsel%')
-                                    ->where('deposit_methods.type','AUTO')
-                                    ->whereBetween('deposits.created_at',[$today,$todayLastMinute])
-                                    ->first();
+                $deposit = DB::table('deposits')->select('deposits.*','deposit_methods.name as method_name','deposit_methods.data','deposit_methods.code')
+                                        ->join('deposit_methods','deposit_methods.id','deposits.method')
+                                        ->where('deposits.status','Pending')
+                                        ->where('deposits.sender',$phone_number)
+                                        ->where('deposits.quantity',$sent_quantity)
+                                        ->where('deposit_methods.name','LIKE','%telkomsel%')
+                                        ->where('deposit_methods.type','AUTO')
+                                        ->whereBetween('deposits.created_at',[$today,$todayLastMinute])
+                                        ->first();
+                if($deposit) {
+                    $update = Deposit::find($deposit->id);
+                    $update->status = 'Success';
+                    $update->save();
 
-            if($deposit) {
-                $deposit->status == 'Success';
-                $deposit->save();
+                    $user = User::find($deposit->user_id);
+                    $user->balance += $deposit->get_balance;
+                    $user->save();
 
-                $user = User::find($deposit->user_id);
-                $user->balance += $deposit->get_balance;
-                $user->save();
+                    $balance_history = new Balance_history;
+                    $balance_history->user_id = $deposit->user_id;
+                    $balance_history->action = "Add Balance";
+                    $balance_history->quantity = $deposit->get_balance;
+                    $balance_history->desc = "Deposit Sukses ID: $deposit->id Melalui ".$deposit->method_name." ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($deposit->get_balance).". Saldo Sekarang: ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($user->balance);
+                    $balance_history->save();
 
-                $balance_history = new Balance_history;
-                $balance_history->user_id = $deposit->user_id;
-                $balance_history->action = "Add Balance";
-                $balance_history->quantity = $deposit->get_balance;
-                $balance_history->desc = "Deposit Sukses ID: $deposit->id Melalui ".$deposit->method_name." Rp ".number_format($deposit->get_balance).". Saldo Sekarang: Rp ".number_format($user->balance);
-                $balance_history->save();
+                    Log::info("Sukses Deposit ID ".$deposit->id." ".config('web_config')['CURRENCY_CODE']." ".$deposit->get_balance.". Saldo Sekarang: ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($user->balance));
+                }
 
-                Log::info("Sukses Deposit ID ".$deposit->id." Rp ".$deposit->get_balance.". Saldo Sekarang: Rp ".number_format($user->balance));
-            }
+            } else if ($from == '168' && preg_match("/Anda menerima Pulsa dari/i", $isi_pesan)) {
+                $array_message = explode(" ", $message);
+                $sent_quantity = substr($array_message[6],2);
+                $phone_number = $array_message[4];
+                
+                Log::info("ENVAYA FROM 168");
 
-        } else if ($from == '168' && preg_match("/Anda menerima Pulsa dari/i", $isi_pesan)) {
-            $array_message = explode(" ", $message);
-            $sent_quantity = substr($message[6],2);
+                $deposit = DB::table('deposits')->select('deposits.*','deposit_methods.name as method_name','deposit_methods.data','deposit_methods.code')
+                                        ->join('deposit_methods','deposit_methods.id','deposits.method')
+                                        ->where('deposits.status','Pending')
+                                        ->where('deposits.sender',$phone_number)
+                                        ->where('deposits.quantity',$sent_quantity)
+                                        ->where('deposit_methods.name','LIKE','%xl%')
+                                        ->where('deposit_methods.type','AUTO')
+                                        ->whereBetween('deposits.created_at',[$today,$todayLastMinute])
+                                        ->first();
 
-            $phone_number = $message[4];
+                if($deposit) {
+                    $update = Deposit::find($deposit->id);
+                    $update->status = 'Success';
+                    $update->save();
 
-            $deposit = DB::table('deposits')->select('deposits.*','deposit_methods.name as method_name','deposit_methods.data','deposit_methods.code')
-                                    ->join('deposit_methods','deposit_methods.id','deposits.method')
-                                    ->where('deposits.status','Pending')
-                                    ->where('deposits.sender',$phone_number)
-                                    ->where('deposits.quantity',$sent_quantity)
-                                    ->where('deposit_methods.name','LIKE','%xl%')
-                                    ->where('deposit_methods.type','AUTO')
-                                    ->whereBetween('deposits.created_at',[$today,$todayLastMinute])
-                                    ->first();
+                    $user = User::find($deposit->user_id);
+                    $user->balance += $deposit->get_balance;
+                    $user->save();
 
-            if($deposit) {
-                $deposit->status == 'Success';
-                $deposit->save();
+                    $balance_history = new Balance_history;
+                    $balance_history->user_id = $deposit->user_id;
+                    $balance_history->action = "Add Balance";
+                    $balance_history->quantity = $deposit->get_balance;
+                    $balance_history->desc = "Deposit Sukses ID: $deposit->id Melalui ".$deposit->method_name." ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($deposit->get_balance).". Saldo Sekarang: ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($user->balance);
+                    $balance_history->save();
 
-                $user = User::find($deposit->user_id);
-                $user->balance += $deposit->get_balance;
-                $user->save();
+                    Log::info("Sukses Deposit ID ".$deposit->id." ".config('web_config')['CURRENCY_CODE']." ".$deposit->get_balance.". Saldo Sekarang: ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($user->balance));
+                }
+            } else {
 
-                $balance_history = new Balance_history;
-                $balance_history->user_id = $deposit->user_id;
-                $balance_history->action = "Add Balance";
-                $balance_history->quantity = $deposit->get_balance;
-                $balance_history->desc = "Deposit Sukses ID: $deposit->id Melalui ".$deposit->method_name." Rp ".number_format($deposit->get_balance).". Saldo Sekarang: Rp ".number_format($user->balance);
-                $balance_history->save();
-
-                Log::info("Sukses Deposit ID ".$deposit->id." Rp ".$deposit->get_balance.". Saldo Sekarang: Rp ".number_format($user->balance));
-            }
-        } else {
-
+            }    
+            return response()->json($json, 200);
         }
-        error_log('SMS diterima dari '.$action->from.'. Isi: '.$action->message, 200);
-        return response()->json($json, 200);
+        
         // switch ($action->type)
         // {
         //     case EnvayaSMS::ACTION_INCOMING:    
@@ -285,7 +299,7 @@ class OthersController extends Controller
         //                         $date_transfer = $data_history_topup['date'];
         //                         $get_balance = $data_history_topup['get_balance'];
         //                         $jumlah_transfer = $data_history_topup['jumlah_transfer'];
-        //                         $cekpesan = preg_match("/Anda mendapatkan penambahan pulsa Rp $jumlah_transfer dari nomor $no_pegirim tgl $date_transfer/i", $isi_pesan);
+        //                         $cekpesan = preg_match("/Anda mendapatkan penambahan pulsa ".config('web_config')['CURRENCY_CODE']." $jumlah_transfer dari nomor $no_pegirim tgl $date_transfer/i", $isi_pesan);
         //                         if($cekpesan == true) {
                                     
         //                             $update_history_topup = mysqli_query($db, "UPDATE deposits_history SET status = 'Success' WHERE id = '$id_history'");

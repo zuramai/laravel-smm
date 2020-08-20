@@ -13,6 +13,7 @@
                     <a href="{{ url('/') }}" class="logo logo-admin"><img src="{{config('web_config')['WEB_LOGO_URL_DARK']}}" height="28" alt="logo"></a>
                 </div>
                 {!! config('web_config')['WEB_AUTH_DESCRIPTION'] !!}
+            </div>
         </div>
         <div class="col-lg-5 offset-lg-1">
             <div class="card mb-0">

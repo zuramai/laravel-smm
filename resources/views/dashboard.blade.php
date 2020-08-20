@@ -46,7 +46,7 @@
                                         <div class="p-3 mini-stat-desc">
                                             <div class="clearfix">
                                                 <h6 class="text-uppercase mt-0 float-left text-white-50">Saldo</h6>
-                                                <h4 class="mb-3 mt-0 float-right">Rp {{number_format($user->balance)}}</h4>
+                                                <h4 class="mb-3 mt-0 float-right">{{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($user->balance)}}</h4>
                                             </div>
                                             <div>
                                                 <a href="{{ url('balance_usage') }}" class="text-white">Lihat Riwayat Saldo</a>
@@ -69,10 +69,10 @@
                                         <div class="p-3 mini-stat-desc">
                                             <div class="clearfix">
                                                 <h6 class="text-uppercase mt-0 float-left text-white-50">Penggunaan</h6>
-                                                <h4 class="mb-3 mt-0 float-right">Rp {{number_format($used_balance)}}</h4>
+                                                <h4 class="mb-3 mt-0 float-right">{{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($used_balance)}}</h4>
                                             </div>
                                             <div>
-                                                <span class="badge badge-light text-primary"> {{number_format($balance_percentage,2)}}% </span> <span class="ml-2">Dari bulan lalu</span>
+                                                <span class="badge badge-light text-primary"> {{Numberize::make($balance_percentage,2)}}% </span> <span class="ml-2">Dari bulan lalu</span>
                                             </div>
                                         </div>
                                         <div class="p-3">
@@ -82,7 +82,7 @@
                                             @if(empty($last_used_balance->created_at))
                                             <p class="font-14 m-0">Belum pernah transaksi</p>
                                             @else
-                                            <p class="font-14 m-0">Terakhir penggunaan: Rp {{number_format($last_used_balance->quantity)}}</p>
+                                            <p class="font-14 m-0">Terakhir penggunaan: {{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($last_used_balance->quantity)}}</p>
                                             @endif
                                         </div>
                                     </div>
@@ -96,14 +96,14 @@
                                                 <h4 class="mb-3 mt-0 float-right">{{$pendingprocessing}}</h4>
                                             </div>
                                             <div>
-                                                <span class=""> Total Order: {{number_format($total_order->count())}} </span> 
+                                                <span class=""> Total Order: {{Numberize::make($total_order->count())}} </span> 
                                             </div>
                                         </div>
                                         <div class="p-3">
                                             <div class="float-right">
                                                 <a href="#" class="text-white-50"><i class="mdi mdi-briefcase-check h5"></i></a>
                                             </div>
-                                            <p class="font-14 m-0">Order Sukses : {{number_format($success)}}</p>
+                                            <p class="font-14 m-0">Order Sukses : {{Numberize::make($success)}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@
                                                         <h5 class="font-14 mb-5">Total Order Bulan Ini</h5>
             
                                                         <div>
-                                                            <h5 class="mb-3">{{Carbon\Carbon::now()->format('F')}}: Rp {{number_format($balance_usage_thismo)}}</h5>
+                                                            <h5 class="mb-3">{{Carbon\Carbon::now()->format('F')}}: {{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($balance_usage_thismo)}}</h5>
                                                             <p class="text-muted mb-4">Selamat datang di {{config('web_config')['APP_NAME']}}, Ini adalah statistik pembelian Anda, jika ada yang bingung baca panduan atau bisa <a href="{{url('/contact')}}">hubungi Admin</a>. Sukses selalu</p>
                                                             <a href="{{ url('order/sosmed') }}" class="btn btn-primary btn-sm">Pemesanan Baru <i class="mdi mdi-chevron-right"></i></a>
                                                         </div>
@@ -153,7 +153,7 @@
                                                   </div>
                                                   <div class="form-group">
                                                     <label><i class="fas fa-dollar-sign "></i> Sisa Saldo</label>
-                                                    <input type="text" name="email" class="form-control-plaintext" value="Rp {{ number_format($user->balance) }}" readonly="">
+                                                    <input type="text" name="email" class="form-control-plaintext" value="{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($user->balance) }}" readonly="">
                                                   </div>
                                                 </form>
                                                  

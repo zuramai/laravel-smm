@@ -35,7 +35,7 @@
 								<tr>
 									<td>{{ $loop->iteration }}</td>
 									<td>{{ $sosmed->name }}</td>
-									<td>{{ $sosmed->jumlah }} Pembelian (Rp. {{number_format($sosmed->price)}})</td>
+									<td>{{ $sosmed->jumlah }} Pembelian ({{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($sosmed->price)}})</td>
 								</tr>
 								@endforeach
 							</table>
@@ -63,7 +63,7 @@
 								<tr>
 									<td>{{ $loop->iteration }}</td>
 									<td>{{ $pulsa->name }}</td>
-									<td>{{ $pulsa->jumlah }} Pesanan (Rp {{ number_format($pulsa->price) }})</td>
+									<td>{{ $pulsa->jumlah }} Pesanan ({{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($pulsa->price) }})</td>
 								</tr>
 								@endforeach
 								@forelse($top_pulsa as $pulsa)
@@ -95,7 +95,7 @@
 						<tr>
 							<td>{{ $loop->iteration }}</td>
 							<td>{{ $deposit->name }}</td>
-							<td>Rp {{ number_format($deposit->total_deposit) }}</td>
+							<td>{{ config('web_config')['CURRENCY_CODE'] }} {{ Numberize::make($deposit->total_deposit) }}</td>
 						</tr>
 						@endforeach
 						@forelse($top_deposit as $deposit)

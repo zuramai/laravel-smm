@@ -42,7 +42,7 @@ class DepositController extends Controller
         $balance_history->user_id = $id_user;
         $balance_history->action = "Add Balance";
         $balance_history->quantity = $get_balance;
-        $balance_history->desc = "Saldo ditambahkan sebesar Rp ".$get_balance;
+        $balance_history->desc = "Saldo ditambahkan sebesar ".config('web_config')['CURRENCY_CODE']." ".$get_balance;
         $balance_history->save();               
 
         Alert::success('Sukses menerima deposit!','Sukses!');

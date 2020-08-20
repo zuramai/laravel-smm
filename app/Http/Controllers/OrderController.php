@@ -15,6 +15,7 @@ use App\Order;
 use App\Orders_pulsa;
 use App\Oprator;
 use App\Helpers\FArray;
+use App\Helpers\Numberize;
 use App\Helpers\SearchKey;
 use App\Helpers\Order_pulsa as OrderPulsa;
 use App\Helpers\Order_sosmed as OrderSosmed;
@@ -209,7 +210,7 @@ class OrderController extends Controller
                         ]);
 
                         Alert::success('Sukses order!','Sukses');
-                        session()->flash('success',"<b>Pesanan anda akan segera diproses.</b><br><b>ID Pesanan: </b>$order->id<br><b>Layanan:</b> $data_service->name <br> <b>Target:</b> $post_link <br> <b>Jumlah:</b> $post_quantity <br> <b>Harga:</b> Rp ".number_format($total_price));
+                        session()->flash('success',"<b>Pesanan anda akan segera diproses.</b><br><b>ID Pesanan: </b>$order->id<br><b>Layanan:</b> $data_service->name <br> <b>Target:</b> $post_link <br> <b>Jumlah:</b> $post_quantity <br> <b>Harga:</b> ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($total_price));
                         return redirect()->back();
                     }else{
                         Log::info($json_result);
@@ -268,7 +269,7 @@ class OrderController extends Controller
                               <div class='alert-body'>
 
                                 <div class ='alert-title'><span class='alert-icon'><i class='fas fa-info-circle'></i></span> <b>Informasi Layanan</b></div>
-                                <b>Harga/1000</b> : Rp $price<br>
+                                <b>Harga/1000</b> : ".config('web_config')['CURRENCY_CODE']." $price<br>
                                 <b>Min order</b> : $service->min<br>
                                 <b>Max order</b> : $service->max<br>
                                 <b>Note</b> : $note
@@ -465,7 +466,7 @@ class OrderController extends Controller
 
             
         } 
-        session()->flash('success',"<b>Pesanan anda telah diterima </b> <br>Total sukses order: $total_success <br> Total gagal order: $total_error <br> Total harga: Rp ".number_format($final_price));
+        session()->flash('success',"<b>Pesanan anda telah diterima </b> <br>Total sukses order: $total_success <br> Total gagal order: $total_error <br> Total harga: ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($final_price));
         return redirect()->back();
     }
 
@@ -561,9 +562,9 @@ class OrderController extends Controller
         
         // Response keys are equal to success response?
 
-        if($provider_name != "PORTALPULSA") {
+        if(empty($poid)) {
             $poid = SearchKey::arraySearch($json_result, $api->order_id_key);
-            if($json_result['result'] != 'success') {
+            if(!$poid) {
                 Alert::error('Layanan tidak tersedia','Error');
                 session()->flash('danger',"Error: ".$json_result['message']);
                 return redirect()->back();
@@ -594,13 +595,13 @@ class OrderController extends Controller
             $balance_history->user_id = Auth::user()->id;
             $balance_history->action = "Cut Balance";
             $balance_history->quantity = $price;
-            $balance_history->desc = "Melakukan Pemesanan $name Rp $price (Order ID: $poid)";
+            $balance_history->desc = "Melakukan Pemesanan $name ".config('web_config')['CURRENCY_CODE']." $price (Order ID: $poid)";
             $balance_history->save();
 
             $activity = new Activity;
             $activity->user_id = Auth::user()->id;
             $activity->type = "Order";
-            $activity->description = "Melakukan Pemesanan $name Rp $price (Order ID: $poid)";
+            $activity->description = "Melakukan Pemesanan $name ".config('web_config')['CURRENCY_CODE']." $price (Order ID: $poid)";
             $activity->user_agent = $r->header('User-Agent');
             $activity->ip = $r->ip();
             $activity->save();
@@ -612,7 +613,7 @@ class OrderController extends Controller
             ]);
 
             Alert::success('Sukses melakukan pemesanan!','Sukses');
-            session()->flash('success','<b>Pesanan telah diterima!</b> <br> <b>Layanan</b>: '.$name.' <br> <b>Harga:</b> Rp '.number_format($price).'<br><b>Tujuan:</b> '.$target);
+            session()->flash('success','<b>Pesanan telah diterima!</b> <br> <b>Layanan</b>: '.$name.' <br> <b>Harga:</b> '.config('web_config')['CURRENCY_CODE'].' '.Numberize::make($price).'<br><b>Tujuan:</b> '.$target);
             return redirect()->back();
         }else{
             Alert::error('Layanan tidak tersedia','Error');
@@ -661,7 +662,7 @@ class OrderController extends Controller
     public function get_price_pulsa(Request $r) {
         $id = $r->id;
         $service = Services_pulsa::find($id);
-        return $service->price;
+        return $service->price+$service->keuntungan;
 
     }
 

@@ -59,9 +59,9 @@
                             <td>{{$data->created_at}}</td>
                             <td>{{$data->user->name}}</td>
                             <td>{{$data->methods->name}} ({{$data->methods->type}})</td>
-                            <td>Rp {{number_format($data->quantity)}}</td>
+                            <td>{{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($data->quantity)}}</td>
                             <td>{{$data->sender}}</td>
-                            <td>Rp {{number_format($data->get_balance)}}</td>
+                            <td>{{ config('web_config')['CURRENCY_CODE'] }} {{Numberize::make($data->get_balance)}}</td>
                             <td><span class="badge badge-{{ ($data->status=='Success' ? 'success' : ($data->status == 'Pending' ? 'warning' : 'danger')) }}">{{$data->status}}</span></td>
                             <td>
                               @if($data->status != "Success")

@@ -17,6 +17,8 @@ use App\Balance_history;
 use App\User;
 use Carbon\Carbon;
 use App\Helpers\Envaya\EnvayaSMS;
+use App\Helpers\Numberize;
+
 class HomeController extends Controller
 {
     /**
@@ -71,7 +73,7 @@ class HomeController extends Controller
         if($data['balance_usage_thismo']==0 && $data['balance_usage_lastmo']==0){
             $data['balance_percentage'] = 0;
         }else{
-            $data['balance_percentage'] = ($data['balance_usage_thismo']/$data['balance_usage_lastmo'])*100;
+            $data['balance_percentage'] = ($data['balance_usage_thismo']/($data['balance_usage_lastmo'] != 0?:1))*100;
         }
 
         $data['total_order'] = Order::where('user_id',Auth::user()->id)->get();
@@ -180,19 +182,19 @@ class HomeController extends Controller
         $balance_history->user_id = Auth::user()->id;
         $balance_history->quantity = $checkCode->quantity;
         $balance_history->action = "Add Balance";
-        $balance_history->desc = "Claim kode voucher senilai Rp ".number_format($checkCode->quantity);
+        $balance_history->desc = "Claim kode voucher senilai ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($checkCode->quantity);
         $balance_history->save();
         
         $activity = new Activity;
         $activity->user_id = Auth::user()->id;
         $activity->type = "Claim Voucher";
-        $activity->description = "Claim kode voucher senilai Rp ".number_format($r->quantity);
+        $activity->description = "Claim kode voucher senilai ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($r->quantity);
         $activity->user_agent = $r->header('User-Agent');
         $activity->ip = $r->ip();
         $activity->save();
 
         Alert::success('Sukses input voucher!','Sukses!');
-        session()->flash('success','Sukses claim voucher! <br> Jumlah saldo ditambahkan: Rp '.number_format($checkCode->quantity)." <br> Jumlah saldo sekarang: ".number_format($user->balance));
+        session()->flash('success','Sukses claim voucher! <br> Jumlah saldo ditambahkan: '.config('web_config')['CURRENCY_CODE'].' '.Numberize::make($checkCode->quantity)." <br> Jumlah saldo sekarang: ".Numberize::make($user->balance));
         return redirect()->back();
 
     }
