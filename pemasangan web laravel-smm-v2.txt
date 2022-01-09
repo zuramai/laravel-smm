@@ -9,16 +9,11 @@
 7. Pindahkan semua isi dari dalam folder public, ke public_html
 8. Edit file public_html/index.php
 9. Ikuti tutorial di https://www.domainesia.com/panduan/cara-upload-file-laravel-di-hosting/
-10. Selesai! Untuk konfigurasi database, panel, dll silahkan edit file laravel/.env
+10. Import database (db.sql) ke database yang sudah dibuat
+10. Konfigurasi database, domain, panel, dll silahkan edit file laravel/.env
 
 ---- SETTING OPERAN ----
-1. PORTALPULSA
-- Setting api key, dll ada di file .env
-- Tambah provider dengan nama PORTALPULSA
-- Untuk PLN silahkan beri nama kategori "PLN"
-
-2. Provider lain
-- Provider seperti JAP, PERFECTSMM, dll silahkan tambah provider dengan tanpa spasi & capslock
+Provider seperti JAP, PERFECTSMM, dll silahkan tambah provider dengan tanpa spasi & capslock di halaman {domain}/developer/providers
 
 
 ---- MENJALANKAN CRONJOB ------
@@ -29,9 +24,13 @@ cd /home/{NAMA USER CPANEL}/laravel && php -d register_argc_argv=On artisan sche
 - Buka laravel/console/Kernel.php
 - Hapus operan yang dirasa tidak diperlukan (untuk menghindari error)
 
----- AKUN DEVELOPER -----
-developer@gmail.com	
-developer
+---- AKUN ADMIN -----
+admin@gmail.com	
+admin
+
+
+----- Konfigurasi Website -----
+Konfigurasi website (logo, deskripsi, kode mata uang, dll) dapat dilakukan di {domain}/developer/configuration
 
 ---- Perhatian! -----
 - Versi PHP Minimal 7.2 / 7.3

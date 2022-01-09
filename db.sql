@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 5.1.0-rc1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 20, 2019 at 05:45 PM
--- Server version: 10.1.34-MariaDB
--- PHP Version: 7.2.8
+-- Host: localhost:3306
+-- Generation Time: Jan 09, 2022 at 04:21 AM
+-- Server version: 5.7.24
+-- PHP Version: 7.4.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `laravel_dummy1`
+-- Database: `laravel_smmv2`
 --
 
 -- --------------------------------------------------------
@@ -66,6 +65,13 @@ CREATE TABLE `apis` (
   `type` enum('PULSA','SOSMED') COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `apis`
+--
+
+INSERT INTO `apis` (`id`, `name`, `order_end_point`, `order_success_response`, `order_method`, `status_end_point`, `status_success_response`, `status_method`, `order_id_key`, `start_counter_key`, `status_key`, `remains_key`, `process_all_order`, `created_at`, `updated_at`, `api_key`, `link`, `type`) VALUES
+(1, 'test', 'https://asd.com', '{\r\n\"success\":true\r\n}', 'POST', 'https://asd.com', '{\r\n\"success\":true\r\n}', 'POST', 'order', 'start_count', 'status', 'remains', 1, '2022-01-09 03:45:33', '2022-01-09 03:45:33', '', 'https://asd.com', 'SOSMED');
+
 -- --------------------------------------------------------
 
 --
@@ -98,6 +104,14 @@ CREATE TABLE `api_request_headers` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `api_request_headers`
+--
+
+INSERT INTO `api_request_headers` (`id`, `header_key`, `header_value`, `header_type`, `api_type`, `api_id`, `created_at`, `updated_at`) VALUES
+(1, 'asd', 'asd', 'custom', 'order', 1, '2022-01-09 03:45:33', '2022-01-09 03:45:33'),
+(2, 'asd', 'asd', 'custom', 'status', 1, '2022-01-09 03:45:33', '2022-01-09 03:45:33');
+
 -- --------------------------------------------------------
 
 --
@@ -114,6 +128,14 @@ CREATE TABLE `api_request_params` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `api_request_params`
+--
+
+INSERT INTO `api_request_params` (`id`, `param_key`, `param_value`, `param_type`, `api_type`, `api_id`, `created_at`, `updated_at`) VALUES
+(1, 'asd', 'target', 'table_column', 'order', 1, '2022-01-09 03:45:33', '2022-01-09 03:45:33'),
+(2, 'asd', 'id', 'table_column', 'status', 1, '2022-01-09 03:45:33', '2022-01-09 03:45:33');
 
 -- --------------------------------------------------------
 
@@ -159,6 +181,31 @@ CREATE TABLE `configs` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `configs`
+--
+
+INSERT INTO `configs` (`id`, `name`, `value`, `created_at`, `updated_at`) VALUES
+(1, 'WEB_LOGO_URL', 'http://localhost/img/logo/laravelsmmv2.png', NULL, NULL),
+(2, 'WEB_LOGO_URL_DARK', 'http://localhost/img/logo/laravelsmmv2-dark.png', NULL, NULL),
+(3, 'WEB_FAVICON_URL', 'http://localhost/img/logo/fav.png', NULL, NULL),
+(4, 'APP_NAME', 'Laravel-SMMV2', NULL, NULL),
+(5, 'WEB_TITLE', 'Laravel-SMMV2', NULL, NULL),
+(6, 'WEB_DESCRIPTION', 'SMM Panel Termurah dan berkualitas tinggi yang menjual jasa layanan Instagram followers,like,view sampai Layanan Youtube seperti subscriber, views, likes. Bergabunglah bersama kami dan tingkatkan penghasilan anda', NULL, NULL),
+(7, 'CURRENCY_CODE', 'Rp', NULL, NULL),
+(8, 'ADD_MEMBER_PRICE', '5000', NULL, NULL),
+(9, 'ADD_AGEN_PRICE', '10000', NULL, NULL),
+(10, 'ADD_RESELLER_PRICE', '50000', NULL, NULL),
+(11, 'ADD_ADMIN_PRICE', '50000', NULL, NULL),
+(12, 'MEMBER_BALANCE', '5000', NULL, NULL),
+(13, 'AGEN_BALANCE', '10000', NULL, NULL),
+(14, 'RESELLER_BALANCE', '50000', NULL, NULL),
+(15, 'ADMIN_BALANCE', '50000', NULL, NULL),
+(16, 'MIN_VOUCHER', '5000', NULL, NULL),
+(17, 'MAX_VOUCHER', '1000000', NULL, NULL),
+(18, 'MIN_DEPOSIT', '5000', NULL, NULL),
+(19, 'WEB_AUTH_DESCRIPTION', '<h5 class=\'font-14 text-muted mb-4\'>Laravel-SMMV2, Website Penyedia Jasa Sosial Media &amp; Pulsa PPOB Terbaik</h5>                <p class=\'text-muted mb-4\'>Dengan bergabung bersama kami, Anda dapat menjadi penyedia jasa social media atau reseller social media seperti jasa penambah Followers, Likes, dll.                Saat ini tersedia berbagai layanan untuk social media terpopuler seperti Instagram, Facebook, Twitter, Youtube, dll. Dan kamipun juga menyediakan Panel Pulsa &amp; PPOB seperti Pulsa All Operator, Paket Data, Saldo Gojek/Grab, All Voucher Game Online, Dll.</p>                <h5 class=\'font-14 text-muted mb-4\'>Kelebihan Laravel-SMMV2 :</h5>                <div>                    <p><i class=\'mdi mdi-arrow-right text-primary mr-2\'></i>Harga Instagram Followers mulai dari Rp 100 per 1000</p>                    <p><i class=\'mdi mdi-arrow-right text-primary mr-2\'></i>Harga Instagram Likes mulai dari Rp 0.</p>                    <p><i class=\'mdi mdi-arrow-right text-primary mr-2\'></i>Harga Youtube Subscriber mulai dari Rp 10.000 per 1k subscriber</p>                </div>', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -367,6 +414,13 @@ CREATE TABLE `providers` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `providers`
+--
+
+INSERT INTO `providers` (`id`, `name`, `type`, `order_type`, `api_id`, `created_at`, `updated_at`) VALUES
+(1, 'test', 'SOSMED', 'API', 1, '2022-01-09 03:45:33', '2022-01-09 03:45:33');
+
 -- --------------------------------------------------------
 
 --
@@ -390,6 +444,13 @@ CREATE TABLE `services` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `services`
+--
+
+INSERT INTO `services` (`id`, `name`, `category_id`, `note`, `min`, `max`, `price`, `price_oper`, `keuntungan`, `type`, `status`, `pid`, `provider_id`, `created_at`, `updated_at`) VALUES
+(1, 'Test Layanan', 1, 'asdasd', 1, 111, 11, 111, 111, 'Basic', 'Active', 111, 1, '2022-01-09 03:45:51', '2022-01-09 03:45:51');
 
 -- --------------------------------------------------------
 
@@ -439,6 +500,13 @@ CREATE TABLE `service_cats` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `service_cats`
+--
+
+INSERT INTO `service_cats` (`id`, `name`, `type`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Test Kategori', 'SOSMED', 'Active', '2022-01-09 03:43:55', '2022-01-09 03:43:55');
 
 -- --------------------------------------------------------
 
@@ -529,6 +597,13 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `username`, `password`, `phone`, `balance`, `level`, `status`, `email_verified_at`, `api_key`, `photo`, `uplink`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'admin 1', 'admin@gmail.com', 'admin', '$2y$10$FQ.u0xE51ilF4ZlLPNFC5.fE0qfecsU6D1WuOWKHsVOL4jhVpAsoe', '123123123', 0, 'Developer', 'Active', NULL, '$2y$10$AXu4bg7JOuP.ItPPqRdyie7S3O3cwrSGCB8BsciOKoElK1Zeqq20C', 'default.png', 'Server', NULL, '2022-01-09 03:41:38', '2022-01-09 03:41:38');
 
 -- --------------------------------------------------------
 
@@ -758,7 +833,7 @@ ALTER TABLE `activities`
 -- AUTO_INCREMENT for table `apis`
 --
 ALTER TABLE `apis`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `api_mappings`
@@ -770,13 +845,13 @@ ALTER TABLE `api_mappings`
 -- AUTO_INCREMENT for table `api_request_headers`
 --
 ALTER TABLE `api_request_headers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `api_request_params`
 --
 ALTER TABLE `api_request_params`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `api_response_logs`
@@ -794,7 +869,7 @@ ALTER TABLE `balance_histories`
 -- AUTO_INCREMENT for table `configs`
 --
 ALTER TABLE `configs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `custom_prices`
@@ -848,13 +923,13 @@ ALTER TABLE `orders_pulsas`
 -- AUTO_INCREMENT for table `providers`
 --
 ALTER TABLE `providers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `services_pulsas`
@@ -872,7 +947,7 @@ ALTER TABLE `services_pulsa_operators`
 -- AUTO_INCREMENT for table `service_cats`
 --
 ALTER TABLE `service_cats`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sms_message`
@@ -902,7 +977,7 @@ ALTER TABLE `ticket_contents`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `vouchers`
