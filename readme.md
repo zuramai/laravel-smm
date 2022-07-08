@@ -30,6 +30,7 @@ npm run watch
 php artisan serve
 ```
 
+Untuk deploy di hosting, bisa ikuti cara ini: [Hosting installation](hosting-installation.md).
 
 # Features
 
@@ -44,6 +45,41 @@ php artisan serve
     - Telkomsel/XL via EnvayaSMS
 - Mass Order Sosmed. Bisa order banyak sekaligus dalam 1x order.
 - API Profile. Tersedia API untuk informasi akun (sisa saldo, level)
+
+## Admin Account
+
+admin@gmail.com	
+admin
+
+## Website Configuration
+
+Konfigurasi website (logo, deskripsi, kode mata uang, dll) dapat dilakukan di {domain}/developer/configuration
+
+## Perhatian!
+
+- Versi PHP Minimal 7.4.1
+- Wajib mengaktifkan "mysqli" dan "pdo_mysqli" di `php.ini`
+- Dalam file .env, ubah `APP_DEBUG` menjadi false dan `APP_ENV` menjadi Production, jika tidak diubah maka akan menjadi bug di website
+
+## Setting operan
+
+Provider seperti JAP, PERFECTSMM, dll silahkan tambah provider dengan tanpa spasi & capslock di halaman `{domain}/developer/providers`
+
+
+## Menjalankan Cronjob
+
+- Jalankan command:
+```bash
+cd /home/{NAMA USER CPANEL}/laravel && php -d register_argc_argv=On artisan schedule:run >> /home/{NAMA USER CPANEL}/logs/cron.log 2>&1 
+```
+
+- Ubah {NAMA USER CPANEL} menjadi nama user cpanelmu
+- Buka laravel/console/Kernel.php
+- Hapus operan yang dirasa tidak diperlukan (untuk menghindari error)
+
+
+
+
 
 
 # License
