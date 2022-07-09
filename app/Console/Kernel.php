@@ -543,33 +543,6 @@ class Kernel extends ConsoleKernel
                 }
             }
         });
-
-        $schedule->call(function() {
-            $license = env('LICENSE_KEY');
-            $installedLogFile = storage_path('installed');
-
-            if(!empty($license)) {
-                $header = [ 'Accept: application/json', 'Authorization: Bearer EiPSDhXlIOwbgst73Vjs' ];
-                $data = [
-                        'license' => $license
-                    ];
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'http://api.zuramai.net/api/smm');
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, 'license='.$license);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                $result = curl_exec($ch);
-                $json_result = json_decode($result);
-
-                if($json_result->status == false) {
-                    unlink(storage_path('installed'));
-                }
-            }else if(empty($license) && file_exists($installedLogFile)) {
-                unlink(storage_path('installed'));
-            }
-        })->everyMinute();
            
     }
 

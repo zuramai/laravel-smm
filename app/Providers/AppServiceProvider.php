@@ -21,20 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        try{
-            Schema::hasTable('configs');
-            $configg = Config::where('name','LICENSE_KEY')->first();
-            if(!$configg && !file_exists(storage_path('installed'))) {
-                return redirect('install');
-            }
-            $web_config = Config::all()->pluck('value','name');
-            config(['web_config'=>$web_config]);
-            // or \DB::statement('show Databases');
-        }catch(\PDOException $e){
-            return redirect('install');
-            //This means there is definitely error connecting to database
-            //I don't understand why you don't want to catch me :(
-        }
         
 
         view()->composer('*', function($view) {
