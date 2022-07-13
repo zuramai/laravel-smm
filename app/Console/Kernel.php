@@ -44,12 +44,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        
+
+        echo "Checking started..\n";
         
   
         // REFUND ORDER PULSA
         $schedule->call(function() {
-            echo "CHECKING REFUND PULSA";
+            echo "====== CHECKING REFUND PULSA ======\n";
             $orders = Orders_pulsa::whereIn('status',['Error'])->where('refund',0)->get();
 
             foreach($orders as $order) {
@@ -80,7 +81,7 @@ class Kernel extends ConsoleKernel
         });
         // STATUS PULSA
         $schedule->call(function() {
-            echo "CHECKING PULSA";
+            echo "====== CHECKING STATUS PULSA =======\n";
             $orders = Orders_pulsa::where('status','Pending')->get();
 
             if(!$orders){
@@ -209,7 +210,7 @@ class Kernel extends ConsoleKernel
         #     AUTO STATUS & REFUND
         # ===========================
         $schedule->call(function() {
-            echo "CHECKING SOSMED";
+            echo "====== CHECKING SOSMED =======\n";
             $orders = Order::whereIn('status', ['Pending', 'Processing'])->inRandomOrder()->limit(15)->get();
             if (!$orders->isEmpty()) {
 
@@ -289,31 +290,29 @@ class Kernel extends ConsoleKernel
                                                 $quantity = $order->quantity;
                                                 $orderPrice = $order->price;
                                                 $user = User::find($order->user_id);
-                                                $price = $order->service->price;                                            
+                                                $price = $order->service->price;
 
-                                              
 
 
                                                 if ($remains < $quantity) {
                                                     // Order price to .00 decimal points
                                                     $bagi = $remains / $quantity;
-                                                    $refundAmount = $price * $bagi;
+                                                    $refundAmount = $orderPrice * $bagi;
 
                                                     if ($refundAmount > 0) {
                                                         // decrease amount in order price
-                                                        $orderPrice = $price - $refundAmount;
+                                                        $orderPrice = $orderPrice - $refundAmount;
 
                                                         // Refund partial to user account
-
-                                                        if(!$order->refund) {
+                                                        if (!$order->refund) {
                                                             $user->balance = $user->balance + $refundAmount;
                                                             $user->save();
-    
+
                                                             $balance_history = new Balance_history;
                                                             $balance_history->user_id = $user->id;
                                                             $balance_history->action = "Refund";
                                                             $balance_history->quantity = $refundAmount;
-                                                            $balance_history->desc = "Saldo Dikembalikan Sebesar ".config('web_config')['CURRENCY_CODE']." ".Numberize::make($refundAmount)." Untuk Pemesanan Sosial Media ID #".$order->id;
+                                                            $balance_history->desc = "Saldo Dikembalikan Sebesar " . config('web_config')['CURRENCY_CODE'] . " " . Numberize::make($refundAmount) . " Untuk Pemesanan Sosial Media ID #" . $order->id;
                                                             $balance_history->save();
                                                         }
 
@@ -325,15 +324,15 @@ class Kernel extends ConsoleKernel
                                                             'price' => $orderPrice,
                                                             'refund' => 1
                                                         ]);
-                                                    }else{
+                                                    } else {
                                                         Order::find($order->id)->update([
                                                             'status' => 'Partial',
                                                             'remains' => $remains,
                                                             'refund' => 1,
                                                         ]);
                                                     }
-
-                                                }elseif($remains >=   $quantity){
+                                                    echo "Order ID #{$order->id}, Refunded {$refundAmount}\n";
+                                                } elseif($remains >=   $quantity){
                                                     // Refund partial to user account
                                                     
                                                         if(!$order->refund) {
@@ -442,6 +441,7 @@ class Kernel extends ConsoleKernel
         #     CEKMUTASI
         # ====================
         $schedule->call(function() {
+            echo "====== CHECKING CEKMUTASI =======\n";
             $apikey = env('CEKMUTASI_API_KEY');
             $today = Carbon::today()->format('Y-m-d H:i:s');
             $todayLastMinute = date('Y-m-d')." 23:59:59";
@@ -528,7 +528,7 @@ class Kernel extends ConsoleKernel
         #     CANCEL DEPOSIT
         # ======================
         $schedule->call(function() {
-            echo "CANCEL DEPOSIT";
+            echo "====== CHECKING DEPOSIT STATUS =======\n";
             $deposits = Deposit::where('status','Pending')->get();;
 
             foreach($deposits as $deposit) {
