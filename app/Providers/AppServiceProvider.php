@@ -21,11 +21,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        
+        $web_config = Config::all()->pluck('value', 'name');
+        config(['web_config' => $web_config]);
 
         view()->composer('*', function($view) {
-            $web_config = Config::all()->pluck('value','name');
-            config(['web_config'=>$web_config]);
+            
 
             if(Auth::check()){
                 $news = News::orderBy('id','desc')->limit(5)->get(); 

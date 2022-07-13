@@ -15,7 +15,8 @@ $(document).ready(function() {
 	                    }) 
 	        });
 	        $('#service').change(function(){
-	            var service = $('#service').val();
+				var service = $('#service').val();
+				if (!service) return;
 	            $.ajax({
 	                url: "/order/sosmed/ajax/get_service_data",
 	                type: 'POST',
