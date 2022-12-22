@@ -1,66 +1,47 @@
-@extends('layouts.auth')
+@extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
-@section('app_title','Reset - '.config('web_config')['APP_NAME'])
-
 <div class="container">
-    <div class="row align-items-center">
-        <div class="col-lg-6">
-            <div>
-                <div >
-                    <a href="{{ url('/') }}" class="logo logo-admin"><img src="{{config('web_config')['WEB_LOGO_URL_DARK']}}" height="28" alt="logo"></a>
-                </div>
-                {!! config('web_config')['WEB_AUTH_DESCRIPTION'] !!}
-            </div>
-        </div>
-        <div class="col-lg-5 offset-lg-1">
-            <div class="card mb-0">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Reset Password') }}</div>
+
                 <div class="card-body">
-                    <div class="text-center">
-                        <div>
-                            <a href="{{ url('/') }}" class="logo logo-admin"><img src="{{config('web_config')['WEB_LOGO_URL_DARK']}}" height="28" alt="logo"></a>
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
                         </div>
-                        <h4 class="text-muted font-18 mt-4">Reset Password</h4>
-                    </div>
+                    @endif
 
-                    <div class="p-2">
-                        <form class="form-horizontal m-t-20" method="POST" action="{{ route('password.email') }}">
-                            @csrf
-                            <div class="alert alert-primary alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                Masukkan <b>Email</b> dan instruksi akan dikirimkan ke emailmu!
+                    <form method="POST" action="{{ route('password.email') }}">
+                        @csrf
+
+                        <div class="row mb-3">
+                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
+                        </div>
 
-                            <div class="form-group row">
-                                <div class="col-12">
-                                    <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required placeholder="Email">
-
-                                    @if ($errors->has('email'))
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('email') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
+                        <div class="row mb-0">
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    {{ __('Send Password Reset Link') }}
+                                </button>
                             </div>
-
-                            <div class="form-group text-center row m-t-20">
-                                <div class="col-12">
-                                    <button class="btn btn-primary btn-block waves-effect waves-light" type="submit">Send Email</button>
-                                </div>
-                            </div>
-
-                        </form>
-                        <!-- end form -->
-                    </div>
-
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- end row -->
-  </div>
 </div>
 @endsection
-
-
