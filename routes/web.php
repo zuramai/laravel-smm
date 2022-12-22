@@ -283,8 +283,6 @@ Route::group(["prefix"=>"developer", "middleware"=>["auth","Developer"] ],functi
 				Route::delete("/",[Admin\ServiceCatPulsaController::class, "service_cat_pulsa_delete"]);
 				Route::delete("/oprator",[Admin\ServiceCatPulsaController::class, "service_cat_oprator_delete"]);
 
-
-
 				Route::get("add_operator", [Admin\ServiceCatPulsaController::class, "operator_add"]);
 				Route::post("add_operator", [Admin\ServiceCatPulsaController::class, "operator_add_post"]);
 				Route::get("edit_operator/{id}",[Admin\ServiceCatPulsaController::class, "operator_edit"]);

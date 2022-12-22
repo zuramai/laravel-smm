@@ -1,28 +1,39 @@
-@extends('layouts.app')
+
+@extends('layouts.auth')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Verify Your Email Address') }}</div>
+@section('app_title','Verify Email - '.config('web_config')['WEB_TITLE'])
+<div class="container-fluid">
 
-                <div class="card-body">
-                    @if (session('resent'))
+<div class="container">
+  <div class="row align-items-center">
+      <div class="col-lg-12 ">
+          <div class="card mb-0">
+              <div class="card-body">
+                  <div class="p-2">
+                      <h4 class="text-muted float-right font-18 mt-4">Verify Email</h4>
+                      <div>
+                          <a href="{{ url('/') }}" class="logo logo-admin"><img src="{{config('web_config')['WEB_LOGO_URL_DARK']}}" height="28" alt="logo"></a>
+                      </div>
+                  </div>
+
+                  <div class="p-2">
+                       @if (session('resent'))
                         <div class="alert alert-success" role="alert">
                             {{ __('A fresh verification link has been sent to your email address.') }}
                         </div>
-                    @endif
+                        @endif
 
-                    {{ __('Before proceeding, please check your email for a verification link.') }}
-                    {{ __('If you did not receive the email') }},
-                    <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>.
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                        {{ __('Before proceeding, please check your email for a verification link.') }}
+                        {{ __('If you did not receive the email') }}, <a href="{{ route('verification.resend') }}">{{ __('click here to request another') }}</a>.
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- end row -->
+</div>
 </div>
 @endsection
+
