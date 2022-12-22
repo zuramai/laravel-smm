@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 use App\Provider;
 use App\Service;
 
-class Deposit_BCA {
+class DepositBCA {
         public static function fix_angka($string)
         {
             $string = str_replace(',', '', $string);

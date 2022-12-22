@@ -6,7 +6,7 @@ use App\Helpers\EnvayaSMS as EnvayaSMS;
 use App\Provider;
 use App\Service;
 
-class telkomsel {
+class DepositTelkomsel {
     public static function check() {
         $request = EnvayaSMS::get_request();
         header("Content-Type: {$request->get_response_type()}");

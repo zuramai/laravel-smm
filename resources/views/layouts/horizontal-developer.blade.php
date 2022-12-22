@@ -316,12 +316,12 @@
         <script src="{{asset('js/fastclick.js')}}"></script>
         <script src="{{asset('js/jquery.slimscroll.js')}}"></script>
         <script src="{{asset('js/jquery.blockUI.js')}}"></script>
-        <script src="{{asset('js/waves.js')}}"></script>
+        <script src="{{asset('js/waves.js')}}"></script> 
         <script src="{{asset('js/jquery.nicescroll.js')}}"></script>
         <script src="{{asset('js/jquery.scrollTo.min.js')}}"></script>
         <script type="text/javascript" src="{{asset('js/sweetalert.min.js')}}"></script>
         <script src="{{asset('plugins/alertify/js/alertify.js')}}"></script>
-        @include('sweet::alert')
+        @include('sweetalert::alert')
 
         @if(url()->current() == url('/')  || url()->current() == url('/home'))
         <!--Morris Chart-->

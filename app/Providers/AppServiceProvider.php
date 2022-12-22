@@ -9,7 +9,7 @@ use App\Activity;
 use App\User;
 use App\Ticket;
 use App\Config;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,12 +21,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        if(!Schema::hasTable('configs'))
+            return;
         $web_config = Config::all()->pluck('value', 'name');
         config(['web_config' => $web_config]);
 
         view()->composer('*', function($view) {
-            
-
             if(Auth::check()){
                 $news = News::orderBy('id','desc')->limit(5)->get(); 
                 $last_login = Activity::where('user_id',auth()->user()->id)->where('type','Login')->orderBy('id','desc')->first();

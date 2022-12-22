@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Stelin\OVOID;
 use Alert;
 use App\Config;
 
@@ -12,7 +11,7 @@ class OVOController extends Controller
     public $ovoid;
 
     public function __construct() {
-        $this->ovoid = new OVOID();
+        $this->ovoid = new \Stelin\OVOID(null, 0);
     }
     public function login(){
         return view('developer.configuration.ovo.login');

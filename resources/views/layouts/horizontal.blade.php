@@ -338,6 +338,7 @@
           </div>
           @endauth
         <!-- jQuery  -->
+        
         <script src="{{asset('js/jquery.min.js')}}"></script>
         <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
         <script src="{{asset('js/modernizr.min.js')}}"></script>
@@ -351,7 +352,7 @@
         <script type="text/javascript" src="{{asset('js/sweetalert.min.js')}}"></script>
         <script src="{{asset('plugins/alertify/js/alertify.js')}}"></script>
         <script src="{{asset('js/app.js')}}"></script>
-        @include('sweet::alert')
+        @include('sweetalert::alert')
         <script type="text/javascript">
             @if(session('display_news') == 1)
                 $('#exampleModal').modal('show')

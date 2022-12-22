@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\OrderPulsaProvider::class,
         RachidLaasri\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
+        RealRashid\SweetAlert\SweetAlertServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -225,7 +226,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Alert' => UxWeb\SweetAlert\SweetAlert::class,
+        'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
         'OrderPulsa' => App\Helpers\Order_pulsa::class,
         'CekmutasiBank' => PTTridi\Cekmutasi\CekmutasiFacade::class,
         'Numberize' => App\Helpers\Numberize::class,
