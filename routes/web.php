@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankPaymentController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
@@ -7,6 +8,11 @@ use App\Http\Controllers\PriceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\APIController;
+use App\Http\Controllers\GetserviceController;
+use App\Http\Controllers\OVOController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 /*
@@ -201,18 +207,18 @@ Route::group(["prefix"=>"staff", "middleware"=>["auth","ExceptMember"]], functio
 
 
 Route::group(["prefix"=>"developer", "middleware"=>["auth","Developer"] ],function() {
-	Route::get("/","AdminController@index");
-	Route::get("/report", "AdminController@report");
-	Route::get("/activity", "AdminController@activity");
+	Route::get("/",[AdminController::class, "index"]);
+	Route::get("/report", [AdminController::class, "report"]);
+	Route::get("/activity", [AdminController::class, "activity"]);
 
-	Route::prefix("ovo")->group(function() {
-		Route::get("login","OVOController@login")->name("ovo_login");
-		Route::post("login","OVOController@login_post");
-		Route::get("verify","OVOController@verify")->name("ovo_verify");
-		Route::post("verify","OVOController@verify_post");
-		Route::get("security_code","OVOController@security_code")->name("ovo_security_code");
-		Route::post("security_code","OVOController@security_code_post");
-	});
+	// Route::prefix("ovo")->group(function() {
+	// 	Route::get("login",[OVOController::class, "login"])->name("ovo_login");
+	// 	Route::post("login",[OVOController::class, "login_post"]);
+	// 	Route::get("verify",[OVOController::class, "verify"])->name("ovo_verify");
+	// 	Route::post("verify",[OVOController::class, "verify_post"]);
+	// 	Route::get("security_code",[OVOController::class, "security_code"])->name("ovo_security_code");
+	// 	Route::post("security_code",[OVOController::class, "security_code_post"]);
+	// });
 
 
 	Route::prefix("/configuration")->group(function() {
@@ -380,7 +386,7 @@ Route::group(["prefix"=>"developer", "middleware"=>["auth","Developer"] ],functi
 
 
 Route::middleware("auth","AjaxMiddleware")->group(function() {
-	Route::post("read_news", "HomeController@read_news");
+	Route::post("read_news", [HomeController::class, 'read_news']);
 });
 
 
