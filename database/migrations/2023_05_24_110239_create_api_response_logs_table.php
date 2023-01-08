@@ -14,15 +14,11 @@ class CreateApiResponseLogsTable extends Migration
     public function up()
     {
         Schema::create('api_response_logs', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
-            $table->unsignedInteger('order_id');
-            $table->unsignedInteger('api_id');
+            $table->id();
+            $table->foreignId('order_id')->constrained('orders');
+            $table->foreignId('api_id')->constrained('apis')->onDelete('cascade');
             $table->text('response');
             $table->timestamps();
-
-            $table->foreign('api_id')
-                ->references('id')->on('apis')->onDelete('cascade');
         });
     }
 

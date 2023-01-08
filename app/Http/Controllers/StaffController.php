@@ -137,7 +137,7 @@ class StaffController extends Controller
     	$user->phone = $r->phone;
    		$user->status = 'Active';
    		$user->api_key = Hash::make(Str::random(5));
-   		$user->uplink = Auth::user()->email;
+   		$user->uplink = Auth::user()->id;
     	$user->save();
 
         $cut = User::find(Auth::user()->id);

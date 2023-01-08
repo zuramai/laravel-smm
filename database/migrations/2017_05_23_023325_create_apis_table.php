@@ -14,8 +14,7 @@ class CreateAPIsTable extends Migration
     public function up()
     {
         Schema::create('apis', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
+            $table->id();
             $table->string('name');
             $table->text('order_end_point');
             $table->text('order_success_response');

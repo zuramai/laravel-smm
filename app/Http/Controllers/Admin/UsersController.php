@@ -59,7 +59,7 @@ class UsersController extends Controller
         $user->level = $level;
         $user->status = 'Active';
         $user->api_key = $api_key;
-        $user->uplink = 'Server';
+        $user->uplink = null;
         $user->save();
 
         session()->flash('success','Sukses tambah pengguna!');

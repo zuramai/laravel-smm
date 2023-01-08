@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateTableSms extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTableSms extends Migration
      */
     public function up()
     {
-        Schema::create('sms_message', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('sms_messages', function (Blueprint $table) {
+            $table->id();
             $table->string('from');
-            $table->string("message");
+            $table->text('message');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateTableSms extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sms_message');
+        Schema::dropIfExists('sms_messages');
     }
-}
+};

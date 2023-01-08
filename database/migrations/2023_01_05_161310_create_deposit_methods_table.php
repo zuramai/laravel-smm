@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('deposit_methods', function (Blueprint $table) {
+            $table->id();
+            $table->enum('type', ['manual','auto']);
+            $table->string('name');
+            $table->string('code');
+            $table->float('rate');
+            $table->string('data');
+            $table->text('note');
+            $table->enum('status', ['active','not active']);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('deposit_methods');
+    }
+};

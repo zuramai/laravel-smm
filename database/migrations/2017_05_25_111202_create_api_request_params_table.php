@@ -14,16 +14,13 @@ class CreateApiRequestParamsTable extends Migration
     public function up()
     {
         Schema::create('api_request_params', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
+            $table->id();
             $table->string('param_key');
             $table->string('param_value');
             $table->string('param_type');
             $table->string('api_type');
-            $table->unsignedInteger('api_id');
+            $table->foreignId('api_id')->constrained('apis')->onDelete('cascade');
             $table->timestamps();
-            $table->foreign('api_id')
-                ->references('id')->on('apis')->onDelete('cascade');
         });
     }
 

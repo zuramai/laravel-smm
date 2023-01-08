@@ -42,13 +42,11 @@
     },
     "autoload": {
         "psr-4": {
-            "PTTridi\\Cekmutasi\\": "packages/pt-tridi/cekmutasi/src",
-            "App\\": "app/"
-        },
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ]
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/",
+            "PTTridi\\Cekmutasi\\": "packages/pt-tridi/cekmutasi/src"
+        }
     },
     "autoload-dev": {
         "psr-4": {

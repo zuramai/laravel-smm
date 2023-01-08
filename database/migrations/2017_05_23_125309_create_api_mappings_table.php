@@ -14,15 +14,12 @@ class CreateApiMappingsTable extends Migration
     public function up()
     {
         Schema::create('api_mappings', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
-            $table->unsignedInteger('package_id');
+            $table->id();
+            $table->unsignedBigInteger('package_id');
             $table->string('api_package_id');
-            $table->unsignedInteger('api_id');
+            $table->foreignId('api_id')->constrained('apis')->onDelete('cascade');
             $table->timestamps();
 
-            $table->foreign('api_id')
-                ->references('id')->on('apis')->onDelete('cascade');
         });
     }
 
