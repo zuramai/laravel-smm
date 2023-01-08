@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('providers', function (Blueprint $table) {
+        Schema::create('api_request_headers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('type',['PULSA','SOSMED']);
-            $table->enum('order_type', ['API','MANUAL','DB']);
-            $table->foreignId('api_id')->constrained('apis');
+            $table->string('header_key');
+            $table->string('header_value');
+            $table->string('header_type');
+            $table->string('api_type');
+            $table->string('api_id');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('providers');
+        Schema::dropIfExists('api_request_headers');
     }
 };

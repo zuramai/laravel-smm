@@ -27,6 +27,9 @@ class CreateAPIsTable extends Migration
             $table->string('status_key');
             $table->string('remains_key');
             $table->boolean('process_all_order')->default(0);
+            $table->string('api_key');
+            $table->string('link');
+            $table->enum('type', ['PULSA', 'SOSMED']);
             $table->timestamps();
         });
     }

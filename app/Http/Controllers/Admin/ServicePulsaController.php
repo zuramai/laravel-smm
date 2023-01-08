@@ -60,7 +60,7 @@ class ServicePulsaController extends Controller
     }
     public function post_add_services_pulsa(Request $r) {
         $r->validate([
-            'category' => 'required|exists:service_cats,id',
+            'category' => 'required|exists:service_categories,id',
             'oprator' => 'required|exists:service_pulsa_operators,id',
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
@@ -86,7 +86,7 @@ class ServicePulsaController extends Controller
     }
     public function update_services_pulsa(Request $r,$id) {
         $r->validate([
-            'category' => 'required|exists:service_cats,id',
+            'category' => 'required|exists:service_categories,id',
             'oprator' => 'required|exists:service_pulsa_operators,id',
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
