@@ -1,9 +1,10 @@
 <?php
+namespace Database\Seeders;
 
+use App\Config;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
-class ConfigTableSeeder extends Seeder
+class ConfigSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,8 +13,7 @@ class ConfigTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('configs')->delete();
-        DB::table('configs')->insert([
+        Config::insert([
             [
                 'name' => 'WEB_LOGO_URL',
                 'value' => asset('img/logo/laravelsmmv2.png')
