@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->text('subject');
             $table->foreignId('user_id')->constrained('users');
-            $table->enum('status', ['open','responded','closed','user-reply']);
+            $table->enum('status', ['Open','Responded','Closed','User reply']);
             $table->boolean('read_by_admin');
             $table->boolean('read_by_user');
 

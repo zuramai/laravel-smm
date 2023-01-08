@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('services_pulsa_operators', function (Blueprint $table) {
+        Schema::create('service_pulsa_operators', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->foreignId('category_id')->constrained('service_categories');

@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('providers', function (Blueprint $table) {
             $table->id();
-            $table->enum('type',['pulsa','sosmed']);
-            $table->enum('order_type', ['api','manual','db']);
+            $table->enum('type',['PULSA','SOSMED']);
+            $table->enum('order_type', ['API','MANUAL','DB']);
             $table->foreignId('api_id')->constrained('apis');
             $table->timestamps();
         });

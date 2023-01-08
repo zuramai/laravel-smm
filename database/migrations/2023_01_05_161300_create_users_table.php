@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone');
             $table->decimal('balance', 10, 2);
-            $table->enum('level', ['member','agen','reseller','admin','developer']);
+            $table->enum('level', ['Member','Agen','Reseller','Admin','Developer']);
             $table->enum('status', ['active','not active']);
             $table->timestamp('email_verified_at');
             $table->string('api_key');

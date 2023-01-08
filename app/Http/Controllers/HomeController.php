@@ -103,7 +103,7 @@ class HomeController extends Controller
         $data['pulsa']['now'] = Orders_pulsa::where('user_id',Auth::user()->id)->where('created_at','LIKE','%'.Carbon::now()->format('Y-m-d').'%')->count();
 
         $data['order_sosmed'] = DB::select("SELECT MONTH(created_at) as month, count(*) as total FROM orders GROUP BY MONTH(created_at) ");
-        $data['order_pulsa'] = DB::select("SELECT MONTH(created_at) as month, count(*) as total FROM orders_pulsas GROUP BY MONTH(created_at) ");
+        $data['order_pulsa'] = DB::select("SELECT MONTH(created_at) as month, count(*) as total FROM order_pulsas GROUP BY MONTH(created_at) ");
 
         return view('dashboard', $data);
     }
@@ -124,7 +124,7 @@ class HomeController extends Controller
     public function hof() {
         $top_sosmed = DB::select("SELECT users.id as user_id, users.name, SUM(price) AS price, COUNT(orders.id) AS jumlah, orders.created_at from orders  join users on orders.user_id = users.id WHERE orders.created_at LIKE '%".date('Y-m')."%' group by user_id order by price desc LIMIT 10");
 
-        $top_pulsa = DB::select("SELECT orders_pulsas.user_id, users.name, SUM(orders_pulsas.price) AS price,COUNT(orders_pulsas.id) AS jumlah, orders_pulsas.created_at FROM orders_pulsas JOIN users ON users.id = orders_pulsas.user_id WHERE orders_pulsas.created_at LIKE '%".date('Y-m')."%' AND orders_pulsas.status='Success' GROUP BY user_id ORDER BY price DESC LIMIT 10");
+        $top_pulsa = DB::select("SELECT order_pulsas.user_id, users.name, SUM(order_pulsas.price) AS price,COUNT(order_pulsas.id) AS jumlah, order_pulsas.created_at FROM order_pulsas JOIN users ON users.id = order_pulsas.user_id WHERE order_pulsas.created_at LIKE '%".date('Y-m')."%' AND order_pulsas.status='Success' GROUP BY user_id ORDER BY price DESC LIMIT 10");
 
         $top_layanan = DB::select('SELECT COUNT(*) as jumlah_order, services.name FROM orders JOIN services ON services.id = orders.service_id  GROUP BY orders.service_id ORDER BY jumlah_order DESC LIMIT 10');
         

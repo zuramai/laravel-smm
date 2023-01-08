@@ -13,11 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('service_categories', function (Blueprint $table) {
+        Schema::create('service_pulsas', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->string('name');
-            $table->enum('type', ['SOSMED', 'PULSA']);
+            $table->decimal('price', 10, 2);
+            $table->decimal('keuntungan', 10, 2);
             $table->enum('status', ['Active', 'Not Active']);
+            $table->foreignId('operator_id')->constrained('service_pulsa_operators');
+            $table->foreignId('category_id')->constrained('service_categories');
+            $table->foreignId('provider_id')->constrained('providers');
             $table->timestamps();
         });
     }
@@ -29,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_categories');
+        Schema::dropIfExists('service_pulsas');
     }
 };

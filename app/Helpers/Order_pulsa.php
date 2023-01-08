@@ -8,6 +8,7 @@ use App\Orders_pulsa;
 use Carbon\Carbon;
 
 class Order_pulsa {
+    
 	public static function portalpulsa($user_id, $key, $secret, $service, $target, $pln = NULL) {
         $url = 'https://portalpulsa.com/api/connect/';
         $oid = rand(0,99999);

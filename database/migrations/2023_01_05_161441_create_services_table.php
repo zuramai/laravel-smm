@@ -23,9 +23,9 @@ return new class extends Migration
             $table->decimal('price_oper', 10, 2);
             $table->decimal('keuntungan', 10, 2);
             $table->bigInteger('pid');
-            $table->enum('type', ['basic', 'custom comment', 'comment likes']);
+            $table->enum('type', ['Basic', 'Custom Comment', 'Comment Likes']);
             $table->foreignId('provider_id')->constrained('providers');
-            $table->enum('status', ['active', 'not active']);
+            $table->enum('status', ['Active', 'Not Active']);
             $table->timestamps();
         });
     }

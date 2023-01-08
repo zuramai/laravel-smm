@@ -21,7 +21,7 @@ return new class extends Migration
             $table->float('rate');
             $table->string('data');
             $table->text('note');
-            $table->enum('status', ['active','not active']);
+            $table->enum('status', ['Active','Not Active']);
             $table->timestamps();
         });
     }

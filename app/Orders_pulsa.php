@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Orders_pulsa extends Model
 {
+    protected $table = "order_pulsas";
+    
     public function service() {
     	return $this->belongsTo('App\Services_pulsa', 'service_id');
     }

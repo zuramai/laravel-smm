@@ -22,7 +22,8 @@ return new class extends Migration
             $table->double('quantity');
             $table->double('start_count');
             $table->double('remains');
-            $table->enum('status', ['success','pending','processing','error','partial']);
+            $table->decimal('price', 10, 2);
+            $table->enum('status', ['Success','Pending','Processing','Error','Partial']);
             $table->enum('place_from', ['web','api']);
             $table->text('notes');
             $table->boolean('refund');

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->integer('remains');
-            $table->enum('status', ['redeemed', 'open']);
+            $table->enum('status', ['Redeemed', 'Open']);
             $table->timestamps();
         });
     }

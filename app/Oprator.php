@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Oprator extends Model
 {
-    protected $table = "services_pulsa_operators";
+    protected $table = "service_pulsa_operators";
 
     public function category() {
     	return $this->belongsTo('App\Service_cat', 'category_id');

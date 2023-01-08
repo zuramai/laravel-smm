@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 
 class UserSeeder extends Seeder
@@ -19,9 +20,9 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
-            'password' => 'admin',
+            'password' => Hash::make('admin'),
             'balance' => '99999',
-            'level' => 'developer',
+            'level' => 'Developer',
             'status' => 'active',
             'api_key' => Uuid::uuid4(),
             'uplink' => null,

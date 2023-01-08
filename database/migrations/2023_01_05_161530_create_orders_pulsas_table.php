@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('orders_pulsas', function (Blueprint $table) {
+        Schema::create('order_pulsas', function (Blueprint $table) {
             $table->id();
             $table->string('oid');
             $table->string('poid');
@@ -22,7 +22,8 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->string('data');
             $table->string('sn');
-            $table->enum('place_from', ['web', 'api']);
+            $table->enum('status', ['Success','Error','Pending']);
+            $table->enum('place_from', ['WEB', 'API']);
             $table->boolean('refund');
             $table->timestamps();
         });
@@ -35,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders_pulsas');
+        Schema::dropIfExists('order_pulsas');
     }
 };

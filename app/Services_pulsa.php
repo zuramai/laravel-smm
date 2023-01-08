@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Services_pulsa extends Model
 {
+  protected $table = "service_pulsas";
     public function category() {
     	return $this->belongsTo('App\Service_cat', 'category_id');
     }

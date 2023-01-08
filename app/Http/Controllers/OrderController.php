@@ -476,7 +476,7 @@ class OrderController extends Controller
     }
     public function pulsa_order(Request $r){
         $r->validate([
-            'service' => 'required|exists:services_pulsas,id',
+            'service' => 'required|exists:service_pulsas,id',
             'target' => 'required',
         ]);
 

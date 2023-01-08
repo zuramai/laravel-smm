@@ -70,33 +70,33 @@ class AdminController extends Controller
         $data['order_sosmed_thismo']['keuntungan'] = $keuntungan;
 
 
-        $data['order_pulsa_alltime'] = DB::table('orders_pulsas')->select(DB::raw("COUNT('orders_pulsas.*') as total_order"), DB::raw('SUM(orders_pulsas.price) as total_price'))
-            ->join('services_pulsas','orders_pulsas.service_id','services_pulsas.id')
+        $data['order_pulsa_alltime'] = DB::table('order_pulsas')->select(DB::raw("COUNT('order_pulsas.*') as total_order"), DB::raw('SUM(order_pulsas.price) as total_price'))
+            ->join('service_pulsas','order_pulsas.service_id','service_pulsas.id')
             ->get();
-        $data['order_pulsa_alltime']['keuntungan'] = DB::table('orders_pulsas')->select(DB::raw('SUM(services_pulsas.keuntungan) as keuntungan'))
-            ->join('services_pulsas','orders_pulsas.service_id','services_pulsas.id')
-            ->where('orders_pulsas.status','!=','Error')
+        $data['order_pulsa_alltime']['keuntungan'] = DB::table('order_pulsas')->select(DB::raw('SUM(service_pulsas.keuntungan) as keuntungan'))
+            ->join('service_pulsas','order_pulsas.service_id','service_pulsas.id')
+            ->where('order_pulsas.status','!=','Error')
             ->first();
         $data['order_pulsa_alltime']['pending'] = Orders_pulsa::where('status','Pending')->count();
         $data['order_pulsa_alltime']['success'] = Orders_pulsa::where('status','Success')->count();
         $data['order_pulsa_alltime']['error'] = Orders_pulsa::whereIn('status',['Error','Partial'])->count();
-        $data['order_pulsa_alltime']['refund'] = DB::table('orders_pulsas')->select(DB::raw("SUM(price) as price"))->where('refund',1)->first();
+        $data['order_pulsa_alltime']['refund'] = DB::table('order_pulsas')->select(DB::raw("SUM(price) as price"))->where('refund',1)->first();
 
 
-        $data['order_pulsa_thismo'] = DB::table('orders_pulsas')->select(DB::raw("COUNT('orders_pulsas.*') as total_order"), DB::raw('SUM(services_pulsas.keuntungan) as keuntungan'), DB::raw("SUM(orders_pulsas.price) AS total_price"))
-            ->join('services_pulsas','orders_pulsas.service_id','services_pulsas.id')
-            ->whereRaw("MONTH(orders_pulsas.created_at) = ".date('m'))
+        $data['order_pulsa_thismo'] = DB::table('order_pulsas')->select(DB::raw("COUNT('order_pulsas.*') as total_order"), DB::raw('SUM(service_pulsas.keuntungan) as keuntungan'), DB::raw("SUM(order_pulsas.price) AS total_price"))
+            ->join('service_pulsas','order_pulsas.service_id','service_pulsas.id')
+            ->whereRaw("MONTH(order_pulsas.created_at) = ".date('m'))
             ->get();
-        $data['order_pulsa_thismo']['keuntungan'] = DB::table('orders_pulsas')->select(DB::raw('SUM(services_pulsas.keuntungan) as keuntungan'))
-            ->join('services_pulsas','orders_pulsas.service_id','services_pulsas.id')
-            ->where('orders_pulsas.status','!=','Error')
-            ->whereRaw("MONTH(orders_pulsas.created_at) = ".date('m'))
+        $data['order_pulsa_thismo']['keuntungan'] = DB::table('order_pulsas')->select(DB::raw('SUM(service_pulsas.keuntungan) as keuntungan'))
+            ->join('service_pulsas','order_pulsas.service_id','service_pulsas.id')
+            ->where('order_pulsas.status','!=','Error')
+            ->whereRaw("MONTH(order_pulsas.created_at) = ".date('m'))
             ->first();
-        $data['order_pulsa_thismo']['pending'] = Orders_pulsa::where('status','Pending')->whereRaw("MONTH(orders_pulsas.created_at) = ".date('m'))->count();
-        $data['order_pulsa_thismo']['success'] = Orders_pulsa::where('status','Success')->whereRaw("MONTH(orders_pulsas.created_at) = ".date('m'))->count();
-        $data['order_pulsa_thismo']['error'] = Orders_pulsa::whereIn('status',['Error','Partial'])->whereRaw("MONTH(orders_pulsas.created_at) = ".date('m'))->count();
-        $data['order_pulsa_thismo']['refund'] = DB::table('orders_pulsas')->select(DB::raw("SUM(price) as price"))->where('refund',1)->whereRaw("MONTH(orders_pulsas.created_at) = ".date('m'))->first();
-        $data['order_pulsa_thismo']['lastmo'] = DB::table('orders_pulsas')->whereRaw('MONTH(created_at) ='.Carbon::now()->subMonth()->format('m'))->count();
+        $data['order_pulsa_thismo']['pending'] = Orders_pulsa::where('status','Pending')->whereRaw("MONTH(order_pulsas.created_at) = ".date('m'))->count();
+        $data['order_pulsa_thismo']['success'] = Orders_pulsa::where('status','Success')->whereRaw("MONTH(order_pulsas.created_at) = ".date('m'))->count();
+        $data['order_pulsa_thismo']['error'] = Orders_pulsa::whereIn('status',['Error','Partial'])->whereRaw("MONTH(order_pulsas.created_at) = ".date('m'))->count();
+        $data['order_pulsa_thismo']['refund'] = DB::table('order_pulsas')->select(DB::raw("SUM(price) as price"))->where('refund',1)->whereRaw("MONTH(order_pulsas.created_at) = ".date('m'))->first();
+        $data['order_pulsa_thismo']['lastmo'] = DB::table('order_pulsas')->whereRaw('MONTH(created_at) ='.Carbon::now()->subMonth()->format('m'))->count();
 
         $data['member']['active'] = DB::table('users')->where('status','Active')->count();
         $data['member']['total_saldo'] = DB::table('users')->select(DB::raw('SUM(balance) as balance'))->where('status','Active')->where('level','!=','Developer')->first();

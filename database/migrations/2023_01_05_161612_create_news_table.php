@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id();
             $table->text('title');
-            $table->enum('type', ['service','info','maintenance','update']);
+            $table->enum('type', ['Service','Info','Maintenance','Update']);
             $table->string('content');
             $table->timestamps();
         });

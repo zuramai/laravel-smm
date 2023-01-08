@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('code');
-            $table->enum('status', ['available', 'used']);
+            $table->enum('status', ['Available', 'Used']);
             $table->decimal('quantity', 10, 2);
             $table->timestamps();
         });

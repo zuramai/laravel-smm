@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('sender');
             $table->decimal('get_balance', 10, 2);
             $table->foreignId('deposit_method_id')->constrained('deposit_methods');
-            $table->enum('status', ['pending','success','error','cancelled']);
+            $table->enum('status', ['Pending','Success','Error','Canceled']);
             $table->timestamps();
         });
     }
