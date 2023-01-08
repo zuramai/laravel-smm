@@ -30,7 +30,7 @@ use App\ApiRequestHeader;
 use App\ApiResponseLog;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-
+use GuzzleHttp\Exception\ConnectException;
 
 class OrderController extends Controller
 {
@@ -224,7 +224,10 @@ class OrderController extends Controller
                 Log::info($e->getMessage());
                 session()->flash('danger',"Error: Layanan tidak tersedia (2).");
                 return redirect()->back();
-
+            }  catch (ConnectException $e) {
+                Log::info($e->getMessage());
+                session()->flash('danger',"Error: Layanan tidak tersedia (2).");
+                return redirect()->back();
             }
         }
         
