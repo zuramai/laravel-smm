@@ -20,9 +20,13 @@ npm install
 composer install
 ```
 
-3. Create database and import the given `db.sql` example
-
 4. Change database information in [.env](https://github.com/zuramai/laravel-smm/blob/master/.env) file
+
+5. Database setup
+
+```bash
+php artisan migrate --seed
+```
 
 5. Run the app locally
 ```
@@ -57,7 +61,7 @@ Konfigurasi website (logo, deskripsi, kode mata uang, dll) dapat dilakukan di {d
 
 ## Perhatian!
 
-- Versi PHP Minimal 7.4.1
+- Versi PHP Minimal 8.0.2
 - Wajib mengaktifkan "mysqli" dan "pdo_mysqli" di `php.ini`
 - Dalam file .env, ubah `APP_DEBUG` menjadi false dan `APP_ENV` menjadi Production, jika tidak diubah maka akan menjadi bug di website
 
