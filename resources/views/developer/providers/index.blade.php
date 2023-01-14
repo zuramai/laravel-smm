@@ -38,6 +38,7 @@
                       <table class="table table-striped table-md">
                           <tr>
                             <th>#</th>
+                            <th>Tipe</th>
                             <th>Nama Provider</th>
                             <th>Order Endpoint</th>
                             <th>Status Endpoint</th>
@@ -46,6 +47,7 @@
                           @foreach($prov as $data)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{$data->type}}</td>
                             <td>{{$data->name}}</td>
                             @if($data->order_type == 'API')
                                 <td>{{$data->api->order_end_point}}</td>

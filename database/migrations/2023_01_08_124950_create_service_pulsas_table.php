@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('keuntungan', 10, 2);
             $table->enum('status', ['Active', 'Not Active']);
-            $table->foreignId('operator_id')->constrained('service_pulsa_operators');
+            $table->foreignId('oprator_id')->constrained('service_pulsa_operators');
             $table->foreignId('category_id')->constrained('service_categories');
             $table->foreignId('provider_id')->constrained('providers');
             $table->timestamps();

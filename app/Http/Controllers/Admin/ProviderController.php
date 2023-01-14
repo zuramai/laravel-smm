@@ -184,6 +184,8 @@ class ProviderController extends Controller
             'type' => $request->input('type'),
         ]);
 
+        Provider::where('api_id', $id)->update(['type' => $request->type]);
+
         ApiRequestParam::where(['api_id' => $id])->delete();
         ApiRequestHeader::where(['api_id' => $id])->delete();
 

@@ -65,7 +65,6 @@ class ServicePulsaController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
             'keuntungan' => 'required|numeric|min:0',
-            'code' => 'required',
             'provider' => 'required|exists:providers,id'
         ]);
 
