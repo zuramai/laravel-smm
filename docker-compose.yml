@@ -1,0 +1,39 @@
+version: '3.8'
+services: 
+    main:
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      depends_on: 
+        - db
+      command: 'php artisan serve --host=0.0.0.0'
+      volumes:
+        - .:/app
+      ports:
+        - 8000:8000
+      networks:
+        - laravel
+
+    db:
+      image: mysql:8.0
+      networks:
+        - laravel
+      environment: 
+        MYSQL_DATABASE: laravel_smm
+        MYSQL_USER: admin
+        MYSQL_ROOT_HOST: "%"
+        MYSQL_PASSWORD: root
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      volumes:
+        - ./storage/dbdata:/var/lib/mysql
+      ports:
+        - 3306:3306
+        - 33060:33060
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-proot"]
+        retries: 3
+        timeout: 5s
+networks:
+  laravel:
+    driver: bridge
