@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->decimal('quantity', 10, 2);
             $table->string('action');
-            $table->string('description');
+            $table->string('desc');
             $table->timestamps();
         });
     }
